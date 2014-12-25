@@ -9,7 +9,7 @@ app = Flask(__name__)
 def hello():
     Config = ConfigParser.ConfigParser()
     Config.read("example.conf")
-    return 'Hello {}'.format(
+    return 'Luke, I am your {}'.format(
         Config.get("example", "text"))
 
 if __name__ == '__main__':

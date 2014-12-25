@@ -4,9 +4,8 @@
 require 'fileutils'
 
 CLOUD_CONFIG_PATH = './user-data'
-CONFIG = 'config.rb'
 
-require_relative CONFIG if File.exist?(CONFIG)
+require_relative 'vader.rb'
 
 Vagrant.configure('2') do |config|
   config.vm.box = "coreos-#{$coreos_channel}"
@@ -68,21 +67,26 @@ Vagrant.configure('2') do |config|
 
       if i == 1
         c.vm.network 'forwarded_port', guest: 5000, host: 5000
-        c.vm.provision :shell, inline: $core01_start_registry
-        case $mode
-        when 'develop'
-          c.vm.provision :shell, inline: $core01_build_image
-        when 'test'
-          c.vm.provision :shell, inline: $core01_fetch_image
-        else
-          die "$mode NOT SUPPORTED"
+        c.vm.provision :shell, inline: core01_start_registry
+        $applications.each do |app|
+          case $mode
+          when 'develop'
+            c.vm.provision :shell, inline: core01_build_image(app)
+          when 'test'
+            c.vm.provision :shell, inline: core01_fetch_image(app)
+          else
+            die "$mode NOT SUPPORTED"
+          end
         end
 
       else
-        c.vm.provision :shell, inline: $fetch_image
+        $applications.each do |app|
+          c.vm.provision :shell, inline: fetch_image(app)
+        end
       end
-      c.vm.provision :shell, inline: $run_image
-
+      $applications.each do |app|
+        c.vm.provision :shell, inline: run_image(app)
+      end
     end
   end
 end

@@ -33,7 +33,7 @@ export ETCD_OPTIONS="--no-sync -C $ETCD"
 [[ -z ${ETCD_HOST} ]] && echo HOST or ETCD_HOST must be set && exit 1
 
 # Your App
-export EXAMPLE=${EXAMPLE:-"world"}
+export EXAMPLE=${EXAMPLE:-"father"}
 
 if [[ -z $HOST ]]; then
   echo '==> $HOST not set.  booting ${APP_NAME} without etcd support.'
