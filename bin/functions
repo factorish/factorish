@@ -1,0 +1,31 @@
+#!/bin/bash
+
+function etcd_set_default {
+  etcdctl --no-sync -C $ETCD mk $ETCD_PATH/$1 $2 >/dev/null 2>&1 || true
+}
+
+function etcd_make_directory {
+  etcdctl --no-sync -C $ETCD setdir $ETCD_PATH/$1 >/dev/null 2>&1 || true
+}
+
+function on_exit() {
+    kill -TERM $SERVICE_PID
+    wait $SERVICE_PID 2>/dev/null
+    exit 0
+}
+
+function publish_to_etcd() {
+  etcdctl $ETCD_OPTIONS set $ETCD_PATH/host $HOST --ttl $ETCD_TTL >/dev/null
+  etcdctl $ETCD_OPTIONS set $ETCD_PATH/port $PUBLISH --ttl $ETCD_TTL >/dev/null
+}
+
+
+function configure_etcd() {
+  # wait for etcd to be available
+  until etcdctl --no-sync -C $ETCD ls >/dev/null 2>&1; do
+    echo "echo ==> waiting for etcd at $ETCD..."
+    sleep $(($ETCD_TTL/2))  # sleep for half the TTL
+  done
+  # wait until etcd has discarded potentially stale values
+  sleep $(($ETCD_TTL+1))
+}

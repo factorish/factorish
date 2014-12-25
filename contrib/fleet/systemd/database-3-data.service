@@ -1,0 +1,14 @@
+[Unit]
+Description=database-3-data
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=/usr/bin/docker pull paulczar/percona-galera
+ExecStart=/bin/sh -c "docker inspect database-3-data >/dev/null 2>&1 || docker run --name database-3-data -v /var/lib/mysql paulczar/percona-galera true"
+
+[Install]
+WantedBy=multi-user.target
+
+[X-Fleet]
+X-Conflicts=database-*-data.service

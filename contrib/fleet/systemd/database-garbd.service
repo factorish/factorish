@@ -1,0 +1,10 @@
+[Unit]
+Description=database-garbd
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=20m
+ExecStartPre=/usr/bin/docker pull paulczar/percona-galera:latest
+ExecStart=/bin/sh -c "/usr/bin/docker run --name database-garbd --rm -p 3306:3306 -p 4444:4444 -p 4567:4567 -p 4568:4568 -e PUBLISH=4567 -e HOST=$COREOS_PRIVATE_IPV4 -e CLUSTER=openstack paulczar/percona-galera:latest /app/bin/garbd"
+ExecStop=/usr/bin/docker stop database-garbd
+

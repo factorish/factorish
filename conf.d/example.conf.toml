@@ -1,0 +1,11 @@
+[template]
+src   = "example.conf"
+dest  = "/app/example/example.conf"
+owner = "app"
+group = "app"
+mode  = "0644"
+keys = [
+  "/service/example",
+]
+check_cmd = "/app/bin/check {{ .src }}"
+readload_cmd = "supervisorctl restart example"

@@ -1,0 +1,14 @@
+[Unit]
+Description=database-1
+Requires=database-1-data.service
+After=database-1-data.service
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=20m
+ExecStartPre=/usr/bin/docker pull paulczar/percona-galera:latest
+ExecStart=/bin/sh -c "/usr/bin/docker run --name database-1 --rm -p 3306:3306 -p 4444:4444 -p 4567:4567 -p 4568:4568 -e PUBLISH=3306 -e HOST=$COREOS_PRIVATE_IPV4 -e CLUSTER=openstack --volumes-from database-1-data paulczar/percona-galera:latest"
+ExecStop=/usr/bin/docker stop database-1
+
+[X-Fleet]
+X-ConditionMachineOf=database-1-data.service

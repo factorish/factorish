@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+# This script is designed to be run inside the container
+#
+
+# fail hard and fast even on pipelines
+set -eo pipefail
+
+# set debug based on envvar
+[[ $DEBUG ]] && set -x
+
+DIR=$(dirname $0)
+
+# functions
+. $DIR/functions
+
+
+# Environment variables that should be passed in via `docker run` command.
+
+# FRAMEWORK
+export APP_NAME=${APP_NAME:-"example"}
+export PUBLISH=${PUBLISH:-3306}
+export PORT=${PORT:-3306}
+export PROTO=${PROTO:-tcp}
+
+export ETCD_HOST=${ETCD_HOST:-$HOST}
+export ETCD_PORT=${ETCD_PORT:-4001}
+export ETCD="$ETCD_HOST:$ETCD_PORT"
+export ETCD_PATH=${ETCD_PATH:-"/service/$APP_NAME"}
+export ETCD_TTL=${ETCD_TTL:-10}
+export ETCD_OPTIONS="--no-sync -C $ETCD"
+
+[[ -z ${ETCD_HOST} ]] && echo HOST or ETCD_HOST must be set && exit 1
+
+# Your App
+export EXAMPLE=${EXAMPLE:-"world"}
+
+if [[ -z $HOST ]]; then
+  echo '==> $HOST not set.  booting ${APP_NAME} without etcd support.'
+  # COMMAND TO RUN YOUR APP GOES HERE
+  tail -f /var/log/syslog # <--- fake command replace it
+  echo "==> ${APP_NAME} running..."
+  exit $?
+fi
+
+configure_etcd
+
+etcd_set_default text ${EXAMPLE}
+
+# wait for confd to run once and install initial templates
+until confd -onetime -node $ETCD -config-file /app/confd.toml; do
+  echo "echo ==> ${APP_NAME}: waiting for confd to write initial templates..."
+  sleep $(($ETCD_TTL/2))  # sleep for half the TTL
+done
+
+echo Starting ${APP_NAME}
+
+# smart shutdown on SIGINT and SIGTERM
+trap on_exit INT TERM
+
+/usr/bin/supervisord -c /etc/supervisord.conf
+
+exit 1

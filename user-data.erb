@@ -1,0 +1,39 @@
+#cloud-config
+
+coreos:
+  etcd:
+      #generate a new token for each unique cluster from https://discovery.etcd.io/new
+      <%= @etcd_discovery %>
+      addr: $public_ipv4:4001
+      peer-addr: $public_ipv4:7001
+  units:
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
+
+write_files:
+  - path: /etc/systemd/system/docker.service.d/50-insecure-registry.conf
+    content: |
+        [Service]
+        Environment=DOCKER_OPTS='--insecure-registry="10.0.2.2:5000"'
+  - path: /etc/motd
+    content: "Example Demo\n"
+  - path: /etc/profile.d/functions.sh
+    permissions: '0755'
+    content: |
+      function start_example() {
+        eval `cat /etc/environment | sed "s/^/export /"`
+        /usr/bin/docker run  -d  -p 8080:8080 -e PUBLISH=8080 \
+          -e HOST=$COREOS_PRIVATE_IPV4 --name example paulczar/example
+      }
+      function stop_example() {
+        /usr/bin/docker kill example
+        /usr/bin/docker rm example
+      }
+      function example() {
+        /usr/bin/docker exec -it example bash
+      }
+      function cleanup() {
+        etcdctl rm --recursive /example
+      }
