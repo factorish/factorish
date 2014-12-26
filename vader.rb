@@ -8,7 +8,11 @@ $vb_cpus = 1
 $coreos_channel = 'beta'
 
 # Size of the CoreOS cluster created by Vagrant
-$num_instances = ENV['instances'] ||= 3
+if ENV['instances']
+  $num_instances = ENV['instances'].to_i
+else
+  $num_instances = 3
+end
 
 # Expose Docker / ETCD ports.
 # If there ar more than one VM, will autocorrect to avoid conflicts.
