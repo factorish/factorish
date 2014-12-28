@@ -22,18 +22,23 @@ write_files:
   - path: /etc/profile.d/functions.sh
     permissions: '0755'
     content: |
-      function start_example() {
+<% @applications.each do |app| %>
+      function start_<%= app[:name] %>() {
         eval `cat /etc/environment | sed "s/^/export /"`
-        /usr/bin/docker run  -d  -p 8080:8080 -e PUBLISH=8080 \
-          -e HOST=$COREOS_PRIVATE_IPV4 --name example paulczar/example
+        echo "Running <%= app[:name] %>"
+        docker run  -d <%= app[:docker_options]%> --name <%= app[:name] %> <%= app[:repository]%>
       }
-      function stop_example() {
-        /usr/bin/docker kill example
-        /usr/bin/docker rm example
+      function stop_<%= app[:name] %>() {
+        /usr/bin/docker kill <%= app[:name] %>
+        /usr/bin/docker rm <%= app[:name] %>
       }
-      function example() {
-        /usr/bin/docker exec -it example bash
+      function build_<%= app[:name] %>() {
+        docker build -t <%= app[:repository] %> <%=app[:dockerfile] %>
       }
+      function <%= app[:name] %>() {
+        /usr/bin/docker exec -it <%= app[:name] %> bash
+      }
+<% end %>
       function cleanup() {
-        etcdctl rm --recursive /example
+        etcdctl rm --recursive /services
       }

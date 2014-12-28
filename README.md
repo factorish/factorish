@@ -10,7 +10,7 @@ I have been experimenting with ways to make standard (non 12 factor) application
 
 The framework for it was based on the work by the opdemand folks on [deis](https://github.com/deis/deis) which I adapted for my [docker-percona_galera](https://github.com/paulczar/docker-percona_galera) project which aims to set up automagically clustering MySQL servers and then slowly morphed into this.
 
-I have included a small example hello world python app which simply reads a config file and prints out the value for a field in there.   This config file is written by confd based on etcd keys.
+I have included a small example hello world python app which simply reads a config file and prints out the value for a field in there.   This config file is written by confd based on environment variables or etcd keys.
 
 You can find a good example of using this (although a much less refined version) framework to build a multi-tier application [here](https://github.com/paulczar/docker-elk_confd).
 

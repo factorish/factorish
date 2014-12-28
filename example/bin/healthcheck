@@ -21,7 +21,7 @@ while [[ -z $(netstat -lnt | awk "\$6 == \"LISTEN\" && \$4 ~ \".$PUBLISH\" && \$
 
 echo "==> ${APP_NAME} running..."
 
-# publish the service to etcd using the injected HOST and PORT
+# test health of application using the injected HOST and PORT
 if [[ ! -z $PUBLISH ]]; then
 
   set +e
@@ -29,10 +29,11 @@ if [[ ! -z $PUBLISH ]]; then
   # wait for the service to become available on PUBLISH port
   sleep 1 && while [[ -z $(netstat -lnt | awk "\$6 == \"LISTEN\" && \$4 ~ \".$PUBLISH\" && \$1 ~ \"$PROTO.?\"") ]] ; do sleep 1; done
 
-  # while the port is listening, publish to etcd
+  # while the port is listening we're okay
   while [[ ! -z $(netstat -lnt | awk "\$6 == \"LISTEN\" && \$4 ~ \".$PUBLISH\" && \$1 ~ \"$PROTO.?\"") ]] ; do
-    publish_to_etcd
-    sleep $(($ETCD_TTL/2)) # sleep for half the TTL
+    # if using publish information to etcd.
+    [[ -n $ETCD_HOST ]] && publish_to_etcd
+    sleep $SLEEP_TIME # sleep for half the TTL
   done
 
   # if the loop quits, something went wrong

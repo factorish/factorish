@@ -29,12 +29,12 @@ $expose_ports=[8080]
 # `test` will try to download from registry
 $mode = ENV['mode'] ||= 'develop' # develop|test
 
-$applications = [
+@applications = [
   {
-    name: "confd_example_app",
-    repository: "paulczar/confd_example_app",
+    name: "example",
+    repository: "vader/example",
     docker_options: "-p 8080:8080 -e PUBLISH=8080 -e HOST=$COREOS_PRIVATE_IPV4",
-    dockerfile: "/home/core/share"
+    dockerfile: "/home/core/share/example"
   }
 ]
 

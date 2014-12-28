@@ -5,7 +5,7 @@ owner = "app"
 group = "app"
 mode  = "0644"
 keys = [
-  "/service/example",
+  "/services/example",
 ]
 check_cmd = "/app/bin/check {{ .src }}"
 readload_cmd = "supervisorctl restart example"

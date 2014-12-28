@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# This script is designed to be run inside the container
+#
+
+# fail hard and fast even on pipelines
+set -eo pipefail
+
+# set debug based on envvar
+[[ $DEBUG ]] && set -x
+
+DIR=$(dirname $0)
+
+# functions
+. $DIR/functions
+
+
+# Environment variables that should be passed in via `docker run` command.
+
+# Defaults for your app:
+export APP_NAME=${APP_NAME:-"example"}
+export PUBLISH=${PUBLISH:-8080}
+export PORT=${PORT:-8080}
+export PROTO=${PROTO:-tcp}
+export text=${text:-"father"}
+
+if [[ -n $ETCD_HOST ]]; then
+  echo '==> $HOST or $ETCD_HOST set.  starting ${APP_NAME} etcd support.'
+  export ETCD_HOST=${ETCD_HOST:-$HOST}
+  export ETCD_PORT=${ETCD_PORT:-4001}
+  export ETCD="$ETCD_HOST:$ETCD_PORT"
+  export ETCD_PATH=${ETCD_PATH:-"/services/$APP_NAME"}
+  export ETCD_TTL=${ETCD_TTL:-10}
+  export ETCD_OPTIONS="--no-sync -C $ETCD"
+  export CONFD_OPTIONS="-node $ETCD -config-file /app/confd_etcd.toml"
+  export SLEEP_TIME=$(($ETCD_TTL/2))
+  configure_etcd
+  # App specific
+  etcd_set_default text ${text}
+else
+  echo '==> $HOST not set.  starting ${APP_NAME} without etcd support.'
+  export CONFD_OPTIONS="-config-file /app/confd_env.toml"
+  export SLEEP_TIME=10
+  # App specific equiv to etcd /services/example/text
+  export SERVICES_EXAMPLE_TEXT=${text}
+fi
+
+# wait for confd to run once and install initial templates
+until confd -onetime $CONFD_OPTIONS; do
+  echo "echo ==> ${APP_NAME}: waiting for confd to write initial templates..."
+  [[ -n $ETCD_HOST ]] && sleep $SLEEP_TIME  # sleep for half the TTL
+done
+
+echo Starting ${APP_NAME}
+
+# smart shutdown on SIGINT and SIGTERM
+trap on_exit INT TERM
+
+/usr/bin/supervisord -c /etc/supervisord.conf
+
+exit 1
