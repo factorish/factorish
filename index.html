@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>he Twelve-Fakter App</title>
+
+		<meta name="description" content="The Twelve-Fakter App">
+		<meta name="author" content="Paul Czarkowski">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/simple.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-35638296-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h2>The Twelve-Fakter App</h2>
+					<h3><a href="http://tech.paulcz.net/12Fakter">http://tech.paulcz.net/12Fakter</a></h3>
+					<p><img src="images/tofurkey.jpg"><br><small>http://www.tofurky.com/</small><br>
+					<p>
+						<small>Created by <a href="http://tech.paulcz.net">Paul Czarkowski</a> / <a href="http://twitter.com/pczarkowski">@pczarkowski</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>I am not a DevOp</h2>
+ 					<p>what even is?</p>
+ 					<p><img src="images/sysadmin.jpg"><br>
+				</section>
+
+				<section>
+					<h2>The Twelve-Factor App</h2>
+					<h3><a href="http://12factor.net">12factor.net</a></h3>
+					<br>
+					<h4>A methodology for building modern web apps that:</h4>
+					<br><br>
+ 					<ul>
+ 						<li>Use declarative formats for setup automation
+ 						<li>Have a clean contract with the underlying operating system
+ 						<li>Are suitable for deployment on modern cloud platforms
+ 						<li>Minimize divergence between development and production
+ 						<li>And can scale up without significant changes
+ 					</ul>
+				</section>
+
+				<section>
+					<h2>The Twelve-Factor App</h2>
+					<h3><a href="http://12factor.net">12factor.net</a></h3>
+						<p><img src="images/unicorn_meat.jpg"><br><small>http://www.thinkgeek.com/product/e5a7/?srp=2</small>
+				</section>
+
+				<section>
+					<h2>Your App</h2>
+					<br>
+					<h4>A decade old application that sort of still runs.</h4>
+					<br><br>
+ 					<ul>
+ 						<li>Runs on servers that are lovingly hand crafted.
+ 						<li>Is written in a outdated language with poor dependency resolution.
+ 						<li>Runs under a web server like Apache or Tomcat.
+ 						<li>Looks different in Development and Production (and all the other steps).
+ 					</ul>
+				</section>
+
+				<section>
+					<h2>Your App</h2>
+						<p><img src="images/spam_can_open.jpg"><br><small>http://tastyislandhawaii.com/2007/12/07/tulip-vs-treet-vs-spam-musubi-showdown/</small>
+ 					<h1 class="fragment">Wordpress</h1>
+				</section>
+
+				<section>
+					<h2>The Twelve-Fakter App</h2>
+					<h3><a href="http://tech.paulcz.net/12Fakter">http://tech.paulcz.net/12Fakter</a></h3>
+					<br>
+ 					<ul>
+ 						<li>You want to modernize your application.
+ 						<li>You probably can't <i>fix</i> the app.
+ 						<li>No time to rewrite the app.
+ 						<li>
+ 					</ul>
+				</section>
+
+				<section>
+				  <h2>Fakter I. Codebase</h2>
+				  <h4>One codebase tracked in revision control, many deploys</h4><br><br>
+				  <ul>
+				    <li>Use Source control ( GIT! )
+				    <li>Add deployment/config code to repo ( Chef Cookbook, Dockerfile)
+				    <li>Add a <b>Vagrantfile</b>
+				    <li>Add deploy scripts to deploy to different environments.
+				  </ul>
+				</section>
+
+				<section>
+				  <h2>Fakter II. Dependencies</h2>
+				  <h4>Explicitly declare and isolate dependencies</h4><br><br>
+				  <p><b>Docker</b></p>
+				  <ul>
+				    <li>Declaration: Dockerfile
+				    <li>Isolation: `docker run`
+				  </ul>
+				  <br><br>
+				  <p><b>Chef</b></p>
+				  <ul>
+				    <li>Declaration: Application Cookbook
+				    <li>Isolation: Language Depdendent ( omnibus? )
+				   </ul>
+				</section>
+
+				<section>
+				  <h2>Fakter III. Configuration</h2>
+				  <h4>Store config in the environment</h4><br><br>
+				  <p><b>Docker</b></p>
+				  <ul>
+				    <li>`docker run -e TEXT=bacon myapp`
+				    <li>Confd - {{ getv "/text" }}
+				  </ul>
+				  <br><br>
+				  <p><b>Chef</b></p>
+				  <ul>
+				    <li>Cookbook Attributes ( roles, environments )
+				    <li>Environment Cookbook
+				   </ul>
+				</section>
+
+				<section>
+				  <h2>Fakter IV. Backing Services</h2>
+				  <h4>Treat backing services as attached resources</h4><br><br>
+				  <ul>
+				    <li>Make no distinction between local and third party services.
+				    <li>Fairly simple to manage for databases etc.
+				    <li>disk persistence is the hard one.
+				    <ul>
+				      <li>remote storage: netapp, fuse-s3fs
+				      <li>clustered FS: drdb, gluster
+				      <li>Ghetto:  Rsync
+				   </ul>
+				  <p>
+				</section>
+
+				<section>
+				  <h2>Fakter V. Build, release, run</h2>
+				  <h4>Strictly separate build and run stages</h4><br><br>
+				  <p><b>Docker</b></p>
+				  <ul>
+				    <li>Build: `docker build -t myapp:1.3.2 .`
+				    <li>Run: `docker run -d -e TEXT=bacon myapp:1.3.2`
+				  </ul>
+				  <br><br>
+				  <p><b>Chef</b></p>
+				  <ul>
+				    <li>Build: `berks install && berks upload`
+				    <li>Run: `chef-client -E production`
+				   </ul>
+				</section>
+
+				<section>
+				  <h2>Fakter VI. Processes</h2>
+				  <h4>Execute the app as one or more stateless processes</h4><br><br>
+				  <ul>
+				    <li>Applications should be treated as stateless processes.
+				    <li>All data that needs to be persisted should be done via backing services.
+				    <li>example: `session` data stored in redis or memcache.
+				    <li>
+				  </ul>
+				</section>
+
+				<section>
+				  <h2>Fakter VII. Port binding</h2>
+				  <h4>Export services via port binding</h4><br>
+				  <p style="text-align:left">Relying on an external service (ex. nginx for php) is a violation of 12factor.  Use a language specific webserver library like `jetty` for java if possible.
+				  <br><br>
+				  <p style="text-align:left"><b>Docker:</b> This is basically solved by default via port binding in docker run command ( docker run -p 8080:8080 )
+				  <br>
+				  <p style="text-align:left"><b>Chef:</b> Harder to solve... Omnibus,  live with violation.
+				</section>
+
+				<section>
+				  <h2>Fakter VIII. Concurrency</h2>
+				  <h4>Scale out via the process model</h4><br>
+				  <ul>
+				    <li>Your application should not daemonize or write pid files.
+				    <ul>
+				      <li>if it does, you may be able to script around it.
+				      <li>Apps like nginx and apache can be run in foreground.
+				    </ul>
+				    <li>Utilize tools like upstart or supervisord to handle process management.
+  			  </ul>
+				</section>
+
+				<section>
+				  <h2>Fakter IX. Disposability</h2>
+				  <h4>Maximize robustness with fast startup and graceful shutdown</h4><br>
+				  <ul>
+				    <li>Otimize to minimize startup ( Docker helps with this! )
+				    <li>Graceful shutdown ( Finish current reqs or give back to a queue )
+				    <li>Sudden Death ( minimal impact on crash.  Smart LB can help? )
+  			  </ul>
+				</section>
+
+				<section>
+				  <h2>X. Dev/prod parity</h2>
+				  <h4>Keep development, staging, and production as similar as possible</h4><br>
+				  <p>You've already done most of the work to achieve this:
+				  <ul>
+				    <li>Use Vagrant to deploy your app <i>and</i> backing services in dev environment using appropriate provisioners.
+				    <li>Docker/Chef help reduce complexity and time to go from dev to prod.
+				    <li>by deploying all envs with same tooling, every dev rebuilt is a test of prod deploy tooling.
+				    <li>Actions to deploy to prod is very similar to deploy to dev.
+  			  </ul>
+				</section>
+
+				<section>
+				  <h2>XI. Logs</h2>
+				  <h4>Treat logs as event streams</h4><br>
+				  <ul>
+				    <li>Never write to a log file always to stdout ( /dev/stdout /dev/stderr are your friends)
+				    <li>If you <B>have</B> to write to a log file, you're violating several rules and will have to try to
+				    script around it (or use a remote file backing service) so that long running containers do not run out of disk space.
+				    <li>By writing to stdout, docker log subsystem sees the logs, and then tooling like ``logspout` can utilize to forward stream to central location.
+  			  </ul>
+				</section>
+
+				<section>
+				  <h2>XII. Admin processes</h2>
+				  <h4>Run admin/management tasks as one-off processes</h4><br>
+				  <p><b>Docker</b></p>
+				  <ul>
+				    <li>docker run -t -e TEXT=bacon myapp:1.3.2 rake db:migrate or
+				    <li>docker exec -t vibrating_descartes rake db:migrate
+				  </ul>
+				  <br><br>
+				  <p><b>Chef</b></p>
+				  <ul>
+				    <li>Perform admin actions in own recipes `chef-client app::upgrade_db -r --once`
+				   </ul>
+				</section>
+
+				<section>
+					<h2>Demo - 12 Fakter Wordpress</h2>
+				</section>
+
+   			<section>
+					<h2>Links</h2>
+					<p><a href="http://tech.paulcz.net">http://tech.paulcz.net</a></p><br>
+					<ul>
+						<li><a href="http://tech.paulcz.net">Link 1</a></li>
+					</ul>
+				</section>
+
+  			<section>
+					<h1>THE END</h1>
+					<h3>BY Paul Czarkowski  / @pczarkowski </h3>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
