@@ -176,12 +176,14 @@
 				  <p><b>Docker</b></p>
 				  <ul>
 				    <li>Build: `docker build -t myapp:1.3.2 .`
+				    <li>Release: ...
 				    <li>Run: `docker run -d -e TEXT=bacon myapp:1.3.2`
 				  </ul>
 				  <br><br>
 				  <p><b>Chef</b></p>
 				  <ul>
 				    <li>Build: `berks install && berks upload`
+				    <li>Release: `berks apply production`
 				    <li>Run: `chef-client -E production`
 				   </ul>
 				</section>
@@ -193,7 +195,6 @@
 				    <li>Applications should be treated as stateless processes.
 				    <li>All data that needs to be persisted should be done via backing services.
 				    <li>example: `session` data stored in redis or memcache.
-				    <li>
 				  </ul>
 				</section>
 
@@ -269,14 +270,16 @@
 				</section>
 
 				<section>
-					<h2>Demo - 12 Fakter Wordpress</h2>
+					<h2>Demo - 12 Fakter Wordpress</h2><br><br>
+					<p><a href="https://github.com/paulczar/12fakter-wordpress">https://github.com/paulczar/12fakter-wordpress</a></p>
 				</section>
 
    			<section>
 					<h2>Links</h2>
-					<p><a href="http://tech.paulcz.net">http://tech.paulcz.net</a></p><br>
-					<ul>
-						<li><a href="http://tech.paulcz.net">Link 1</a></li>
+  				<ul>
+						<li><a href="http://tech.paulcz.net/12fakter">This Presentation</a></li>
+						<li><a href="https://github.com/paulczar/12fakter">12 fakter dev sandbox</a></li>
+						<li><a href="https://github.com/paulczar/12fakter-wordpress">12 fakter wordpress</a></li>
 					</ul>
 				</section>
 
