@@ -22,7 +22,7 @@ export APP_NAME=${APP_NAME:-"example"}
 export PUBLISH=${PUBLISH:-8080}
 export PORT=${PORT:-8080}
 export PROTO=${PROTO:-tcp}
-export text=${text:-"father"}
+export SERVICES_EXAMPLE_TEXT=${SERVICES_EXAMPLE_TEXT:-"father"}
 
 if [[ -n $ETCD_HOST ]]; then
   echo '==> $HOST or $ETCD_HOST set.  starting ${APP_NAME} etcd support.'
@@ -36,13 +36,12 @@ if [[ -n $ETCD_HOST ]]; then
   export SLEEP_TIME=$(($ETCD_TTL/2))
   configure_etcd
   # App specific
-  etcd_set_default text ${text}
+  etcd_set_default text $SERVICES_EXAMPLE_TEXT
 else
   echo '==> $HOST not set.  starting ${APP_NAME} without etcd support.'
   export CONFD_OPTIONS="-config-file /app/confd_env.toml"
   export SLEEP_TIME=10
   # App specific equiv to etcd /services/example/text
-  export SERVICES_EXAMPLE_TEXT=${text}
 fi
 
 # wait for confd to run once and install initial templates

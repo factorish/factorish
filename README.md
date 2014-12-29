@@ -1,33 +1,39 @@
-VAgrant Docker and Etcd Repo
-============================
+12Fakter
+========
 
 About
 -----
 
-`Vader` is a project I developed to make it easier to build out applications to run on the CoreOS stack.
-
-I have been experimenting with ways to make standard (non 12 factor) applications work on CoreOS using confd to help template out config files to help fake out 12 factoredness (no that's not a word).  This project is the result of that.
+`12fakter` is a project I developed to make it easier to take legacy applications and make them behave like a [12factor](http://12factor.net) application.
 
 The framework for it was based on the work by the opdemand folks on [deis](https://github.com/deis/deis) which I adapted for my [docker-percona_galera](https://github.com/paulczar/docker-percona_galera) project which aims to set up automagically clustering MySQL servers and then slowly morphed into this.
 
-I have included a small example hello world python app which simply reads a config file and prints out the value for a field in there.   This config file is written by confd based on environment variables or etcd keys.
+I have included a small example hello world python app which simply reads a config file and prints out the value for a field in there.   This config file is written by confd based on environment variables (by default) or etcd keys ( with a few minor changes).
 
-You can find a good example of using this (although a much less refined version) framework to build a multi-tier application [here](https://github.com/paulczar/docker-elk_confd).
+You can find a good example of using this (although a much less refined version) framework to build a multi-tier application [here](https://github.com/paulczar/docker-elk_confd) and an example of making [wordpress 12fackter](https://github.com/paulczar/12fakter-wordpress)
 
 What does it do?
 ----------------
 
-`Vader` is a very opinionated `Vagrantfile` which spins up a number of CoreOS servers that form an `etcd` cluster and a helper `vader.rb` which contains some modifiable default variables and functions for building and launching applications which are defined in a fairly simple hash.
+`12fakter` is a is mainly a very opinionated `Vagrantfile` which spins up a development environment consisting of a number of CoreOS servers (that form an `etcd` cluster) and a helper `12fakter.rb` which contains some modifiable default variables and functions for building and launching applications which are defined in a fairly simple hash.
 
-Launching `Vader` is as simple as running `vagrant up`.   The default cluster size is 3 VMs and as the first VM provisions it will start a private docker registry which it will use to host your images so that you only have to build or download them once.   `Vader` will then build your application as defined in the provided Dockerfile and will launch it on each VM.
+Launching a 12fakter development environment is as simple as running `vagrant up`.   The default cluster size is 3 VMs and as the first VM provisions it will start a private docker registry which it will use to host your images so that you only have to build or download them once.   It will then build your application as defined in the `12fakter.rb` file and will launch it on each VM.
 
 The registry and its images are persisted on your host in `registry/` if you want `vagrant up` to automatically rebuild them you should clean that directory out by running `./clean_registry`.
 
-If you set the mode ( either via environment variable, or setting $mode in `vader.rb` ) to `test` it will not try to built the Applications docker image but will instead try to download it from the docker registry.
+If you set the mode ( either via environment variable, or setting $mode in `12fakter.rb` ) to `test` it will not try to built the Applications docker image but will instead try to download it from the docker registry.
 
 The included example application will now be available via a port mapping so that you can interact with it:
 
+The startup script uses a default of `father` for the environment variable of `SERVICES_EXAMPLE_TEXT` if you have not specified one.  To change the config option simply restart the docker container and set `-e SERVICES_EXAMPLE_TEXT=bacon`.
+
 ```
+$ curl localhost:8080
+Luke, I am your father
+```
+
+with etcd enabled you can change values live:
+
 $ curl localhost:8080
 Luke, I am your father
 $ etcdctl set /service/example/text bacon
@@ -36,10 +42,18 @@ $ curl localhost:8080
 Luke, I am your bacon
 ```
 
+A bunch of functions are also made available to you via some userdata magic based on your application definitions which can be run inside any of the VMs.
+
+* `start_<app name>` - start the application container
+* `stop_<app_name>` - stop the application container
+* `build_<app_name>` - rebuild the application image
+* `<app_name>` - get a `bash` prompt inside the running container
+* `cleanup` - clean up the `/services/ etcd namespace.
+
 Example Application
 ===================
 
-The example app not only gives you an easy way to check out `Vader` itself, but it also provides a framework in which you can port legacy applications easily to the CoreOS/Docker ecosystem using `confd` and `etcd` to build out configs etc.
+The example app not only gives you an easy way to check out the tooling itself, but it also provides a framework in which you can port legacy applications easily to the CoreOS/Docker ecosystem using `confd` and `etcd` to build out configs etc.
 
 Framework
 ---------

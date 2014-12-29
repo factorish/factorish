@@ -5,7 +5,7 @@ require 'fileutils'
 
 CLOUD_CONFIG_PATH = './user-data'
 
-require_relative 'vader.rb'
+require_relative '12fakter.rb'
 
 Vagrant.configure('2') do |config|
   config.vm.box = "coreos-#{$coreos_channel}"
