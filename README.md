@@ -34,6 +34,7 @@ Luke, I am your father
 
 with etcd enabled you can change values live:
 
+```
 $ curl localhost:8080
 Luke, I am your father
 $ etcdctl set /service/example/text bacon
