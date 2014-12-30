@@ -1,27 +1,27 @@
-12Fakter
-========
+Factorish
+=========
 
 About
 -----
 
-`12fakter` is a project I developed to make it easier to take legacy applications and make them behave like a [12factor](http://12factor.net) application.
+`factorish` is a project I developed to make it easier to take legacy applications and make them behave like a [12factor](http://12factor.net) application.
 
 The framework for it was based on the work by the opdemand folks on [deis](https://github.com/deis/deis) which I adapted for my [docker-percona_galera](https://github.com/paulczar/docker-percona_galera) project which aims to set up automagically clustering MySQL servers and then slowly morphed into this.
 
 I have included a small example hello world python app which simply reads a config file and prints out the value for a field in there.   This config file is written by confd based on environment variables (by default) or etcd keys ( with a few minor changes).
 
-You can find a good example of using this (although a much less refined version) framework to build a multi-tier application [here](https://github.com/paulczar/docker-elk_confd) and an example of making [wordpress 12fackter](https://github.com/paulczar/12fakter-wordpress)
+You can find a good example of using this (although a much less refined version) framework to build a multi-tier application [here](https://github.com/paulczar/docker-elk_confd) and an example of making [wordpress 12fackter](https://github.com/paulczar/factorish-wordpress)
 
 What does it do?
 ----------------
 
-`12fakter` is a is mainly a very opinionated `Vagrantfile` which spins up a development environment consisting of a number of CoreOS servers (that form an `etcd` cluster) and a helper `12fakter.rb` which contains some modifiable default variables and functions for building and launching applications which are defined in a fairly simple hash.
+`factorish` is a is mainly a very opinionated `Vagrantfile` which spins up a development environment consisting of a number of CoreOS servers (that form an `etcd` cluster) and a helper `factorish.rb` which contains some modifiable default variables and functions for building and launching applications which are defined in a fairly simple hash.
 
-Launching a 12fakter development environment is as simple as running `vagrant up`.   The default cluster size is 3 VMs and as the first VM provisions it will start a private docker registry which it will use to host your images so that you only have to build or download them once.   It will then build your application as defined in the `12fakter.rb` file and will launch it on each VM.
+Launching a factorish development environment is as simple as running `vagrant up`.   The default cluster size is 3 VMs and as the first VM provisions it will start a private docker registry which it will use to host your images so that you only have to build or download them once.   It will then build your application as defined in the `factorish.rb` file and will launch it on each VM.
 
 The registry and its images are persisted on your host in `registry/` if you want `vagrant up` to automatically rebuild them you should clean that directory out by running `./clean_registry`.
 
-If you set the mode ( either via environment variable, or setting $mode in `12fakter.rb` ) to `test` it will not try to built the Applications docker image but will instead try to download it from the docker registry.
+If you set the mode ( either via environment variable, or setting $mode in `factorish.rb` ) to `test` it will not try to built the Applications docker image but will instead try to download it from the docker registry.
 
 The included example application will now be available via a port mapping so that you can interact with it:
 
