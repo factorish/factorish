@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>he Twelve-Fakter App</title>
+		<title>Factorish: The Twelve-Fakter App</title>
 
 		<meta name="description" content="The Twelve-Fakter App">
 		<meta name="author" content="Paul Czarkowski">
@@ -46,18 +46,13 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
+				  <h1>Factorish</h1>
 					<h2>The Twelve-Fakter App</h2>
-					<h3><a href="http://tech.paulcz.net/factorish">http://tech.paulcz.net/factorish</a></h3>
 					<p><img src="images/tofurkey.jpg"><br><small>http://www.tofurky.com/</small><br>
+					<h3><a href="http://tech.paulcz.net/factorish">http://tech.paulcz.net/factorish</a></h3>
 					<p>
 						<small>Created by <a href="http://tech.paulcz.net">Paul Czarkowski</a> / <a href="http://twitter.com/pczarkowski">@pczarkowski</a></small>
 					</p>
-				</section>
-
-				<section>
-					<h2>I am not a DevOp</h2>
- 					<p>what even is?</p>
- 					<p><img src="images/sysadmin.jpg"><br>
 				</section>
 
 				<section>
@@ -101,14 +96,17 @@
 				</section>
 
 				<section>
+				  <h1>Factorish</h1>
 					<h2>The Twelve-Fakter App</h2>
-					<h3><a href="http://tech.paulcz.net/12Fakter">http://tech.paulcz.net/12Fakter</a></h3>
 					<br>
  					<ul>
- 						<li>You want to modernize your application.
- 						<li>You probably can't <i>fix</i> the app.
+ 						<li>You want to take advantage of newer infrastructure <br>( Docker, CoreOS, PAAS ).
+ 						<li>Can't <i>fix</i> the app.
  						<li>No time to rewrite the app.
+ 						<li>Let's fake it.
  					</ul>
+ 					<br><br><BR>
+					<h3><a href="https://github.com/paulczar/factorish">http://tech.paulcz.net/factorish</a></h3>
 				</section>
 
 				<section>
@@ -116,42 +114,81 @@
 				  <h4>One codebase tracked in revision control, many deploys</h4><br><br>
 				  <ul>
 				    <li>Use Source control ( GIT! )
-				    <li>Add deployment/config code to repo ( Chef Cookbook, Dockerfile)
-				    <li>Add a <b>Vagrantfile</b>
-				    <li>Add deploy scripts to deploy to different environments.
+				    <li>Add these to your app (or make them your app)
+				    <ul>
+				    <li>Dockerfile / .dockerignore
+				    <li>Vagrantfile
+				    <li>Deploy scripts
+				    </ul>
+				    <li>https://github.com/paulczar/factorish
 				  </ul>
 				</section>
 
 				<section>
 				  <h2>Fakter II. Dependencies</h2>
 				  <h4>Explicitly declare and isolate dependencies</h4><br><br>
-				  <p><b>Docker</b></p>
+				  <p><b>Easy wins with Docker</b></p>
 				  <ul>
-				    <li>Declaration: Dockerfile
-				    <li>Isolation: `docker run`
+				    <li>Declaration - Dockerfile
+				    <li>Isolation - `docker run`
 				  </ul>
-				  <br><br>
-				  <p><b>Chef</b></p>
-				  <ul>
-				    <li>Declaration: Application Cookbook
-				    <li>Isolation: Language Depdendent ( omnibus? )
-				   </ul>
+				</section>
+
+				<section>
+				  <h2>Fakter II. Dependencies</h2>
+				  <pre class='stretch'><code>
+# Dockerfile: factorish/example
+FROM python:2
+MAINTAINER Paul Czarkowski "paul@paulcz.net"
+RUN \
+  apt-get update && apt-get install -yq
+  supervisor \
+RUN \
+  curl -sSL -o /usr/local/bin/etcdctl https://s3-us-west-2.amazonaws.com/opdemand/etcdctl-v0.4.6 && chmod +x /usr/local/bin/etcdctl \
+  && curl -sSL -o /usr/local/bin/confd https://github.com/kelseyhightower/confd/releases/download/v0.7.1/confd-0.7.1-linux-amd64 && chmod +x /usr/local/bin/confd
+ADD . /app
+WORKDIR /app
+RUN \
+  useradd -d /app -c 'application' -s '/bin/false' app && \
+  chmod +x /app/bin/* && \
+  pip install -r /app/example/requirements.txt
+CMD ["/app/bin/boot"]
+EXPOSE 8080
+				  </code></pre>
 				</section>
 
 				<section>
 				  <h2>Fakter III. Configuration</h2>
 				  <h4>Store config in the environment</h4><br><br>
-				  <p><b>Docker</b></p>
+				  <p><b>Again, Easy wins with Docker</b></p>
 				  <ul>
 				    <li>`docker run -e TEXT=bacon myapp`
 				    <li>Confd - {{ getv "/text" }}
+				    <li>`sed -i "s/xxxTEXTxxx/${TEXT}" /etc/config.conf`
 				  </ul>
-				  <br><br>
-				  <p><b>Chef</b></p>
-				  <ul>
-				    <li>Cookbook Attributes ( roles, environments )
-				    <li>Environment Cookbook
-				   </ul>
+				</section>
+
+				<section>
+				  <h2>Fakter III. Configuration</h2>
+<p>/app/conf.d/example.conf.toml
+				  <pre><code>
+[template]
+src   = "example.conf"
+dest  = "/app/example/example.conf"
+owner = "app"
+group = "app"
+mode  = "0644"
+keys = [
+  "/services/example",
+]
+check_cmd = "/app/bin/check {{ .src }}"
+reload_cmd = "supervisorctl restart example"
+				  </code></pre>
+<p>/app/templates/example.conf
+				  <pre><code>
+[example]
+text: {{ getv "/services/example/text" }}
+				  </code></pre>
 				</section>
 
 				<section>
@@ -159,15 +196,41 @@
 				  <h4>Treat backing services as attached resources</h4><br><br>
 				  <ul>
 				    <li>Make no distinction between local and third party services.
+				    <li>use ENV to configure.
 				    <li>Fairly simple to manage for databases etc.
 				    <li>disk persistence is the hard one.
-				    <ul>
+  			    <ul>
 				      <li>Docker: volume mounts, data containers
 				      <li>Remote Storage: netapp, nfs, fuse-s3fs
 				      <li>Clustered FS: drdb, gluster
 				      <li>Ghetto: rsync
 				   </ul>
 				  <p>
+				</section>
+
+				<section>
+				  <h2>Fakter IV. Backing Services</h2>
+					<p>/app/templates/wp-config.php
+				  <pre><code>
+/** The name of the database for WordPress */
+define('DB_NAME', '{{ getv "db/name" }}');
+
+/** MySQL database username */
+define('DB_USER', '{{ getv "db/user" }}');
+
+/** MySQL database password */
+define('DB_PASSWORD', '{{ getv "db/pass" }}');
+
+/** MySQL hostname */
+define('DB_HOST', '{{ getv "db/host" }}');
+			  </code></pre>
+			  <p>Docker Run command
+				  <pre><code>
+$ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
+  -e DB_PASSWORD=wordpress $DB_HOST=my.database.com \
+  -v /mnt/nfs/wordpress:/app/wordpress factorish/wordpress
+				  </code></pre>
+
 				</section>
 
 				<section>
@@ -179,13 +242,6 @@
 				    <li>Release: ...
 				    <li>Run: `docker run -d -e TEXT=bacon myapp:1.3.2`
 				  </ul>
-				  <br><br>
-				  <p><b>Chef</b></p>
-				  <ul>
-				    <li>Build: `berks install && berks upload`
-				    <li>Release: `berks apply production`
-				    <li>Run: `chef-client -E production`
-				   </ul>
 				</section>
 
 				<section>
@@ -194,7 +250,7 @@
 				  <ul>
 				    <li>Applications should be treated as stateless processes.
 				    <li>All data that needs to be persisted should be done via backing services.
-				    <li>example: `session` data stored in redis or memcache.
+				    <li>example: store session data in redis or memcache.
 				  </ul>
 				</section>
 
@@ -212,6 +268,7 @@
 				  <h2>Fakter VIII. Concurrency</h2>
 				  <h4>Scale out via the process model</h4><br>
 				  <ul>
+				    <li>Scale up or down by creating or destroying docker containers.
 				    <li>Your application should not daemonize or write pid files.
 				    <ul>
 				      <li>if it does, you may be able to script around it.
@@ -237,7 +294,7 @@
 				  <p>You've already done most of the work to achieve this:
 				  <ul>
 				    <li>Use Vagrant to deploy your app <i>and</i> backing services in dev environment using appropriate provisioners.
-				    <li>Docker/Chef help reduce complexity and time to go from dev to prod.
+				    <li>Docker helps reduce complexity and time to go from dev to prod.
 				    <li>by deploying all envs with same tooling, every dev rebuilt is a test of prod deploy tooling.
 				    <li>Actions to deploy to prod is very similar to deploy to dev.
   			  </ul>
@@ -257,16 +314,10 @@
 				<section>
 				  <h2>XII. Admin processes</h2>
 				  <h4>Run admin/management tasks as one-off processes</h4><br>
-				  <p><b>Docker</b></p>
 				  <ul>
-				    <li>docker run -t -e TEXT=bacon myapp:1.3.2 rake db:migrate or
+				    <li>docker run -t -e TEXT=bacon myapp:1.3.2 rake db:migrate
 				    <li>docker exec -t vibrating_descartes rake db:migrate
 				  </ul>
-				  <br><br>
-				  <p><b>Chef</b></p>
-				  <ul>
-				    <li>Perform admin actions in own recipes `chef-client -r app::upgrade_db --once`
-				   </ul>
 				</section>
 
 				<section>
