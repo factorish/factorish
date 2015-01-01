@@ -8,4 +8,4 @@ keys = [
   "/services/example",
 ]
 check_cmd = "/app/bin/check {{ .src }}"
-readload_cmd = "supervisorctl restart example"
+reload_cmd = "supervisorctl restart example"
