@@ -45,8 +45,8 @@ Luke, I am your bacon
 
 A bunch of functions are also made available to you via some userdata magic based on your application definitions which can be run inside any of the VMs.
 
-* `start_<app name>` - start the application container
-* `stop_<app_name>` - stop the application container
+* `run_<app name>` - run the application container
+* `kill_<app_name>` - kill (and rm) the application container
 * `build_<app_name>` - rebuild the application image
 * `<app_name>` - get a `bash` prompt inside the running container
 * `cleanup` - clean up the `/services/ etcd namespace.

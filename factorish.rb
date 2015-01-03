@@ -33,7 +33,11 @@ $mode = ENV['mode'] ||= 'develop' # develop|test
   {
     name: "example",
     repository: "vader/example",
-    docker_options: "-p 8080:8080 -e PUBLISH=8080 -e HOST=$COREOS_PRIVATE_IPV4",
+    docker_options: [
+      "-p 8080:8080",
+      "-e PUBLISH=8080",
+      "-e HOST=$COREOS_PRIVATE_IPV4"
+    ],
     dockerfile: "/home/core/share/example"
   }
 ]
@@ -92,7 +96,7 @@ def run_image(app)
   $run_image=<<-EOF
     eval `cat /etc/environment | sed "s/^/export /"`
     echo "Running example"
-    docker run  -d  #{app[:docker_options]} --name #{app[:name]} #{app[:repository]} || \
+    docker run  -d  #{app[:docker_options].join(' ')} --name #{app[:name]} #{app[:repository]} || \
     echo is it already running?
   EOF
 end

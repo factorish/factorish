@@ -23,12 +23,12 @@ write_files:
     permissions: '0755'
     content: |
 <% @applications.each do |app| %>
-      function start_<%= app[:name] %>() {
+      function run_<%= app[:name] %>() {
         eval `cat /etc/environment | sed "s/^/export /"`
         echo "Running <%= app[:name] %>"
-        docker run  -d <%= app[:docker_options]%> --name <%= app[:name] %> <%= app[:repository]%>
+        docker run  -d <%= app[:docker_options].join(' ') %> --name <%= app[:name] %> <%= app[:repository]%>
       }
-      function stop_<%= app[:name] %>() {
+      function kill_<%= app[:name] %>() {
         /usr/bin/docker kill <%= app[:name] %>
         /usr/bin/docker rm <%= app[:name] %>
       }
