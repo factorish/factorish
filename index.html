@@ -189,6 +189,7 @@ reload_cmd = "supervisorctl restart example"
 [example]
 text: {{ getv "/services/example/text" }}
 				  </code></pre>
+				<p>{{ }} - golang/confd macro syntax.
 				</section>
 
 				<section>
@@ -200,12 +201,12 @@ text: {{ getv "/services/example/text" }}
 				    <li>Fairly simple to manage for databases etc.
 				    <li>disk persistence is the hard one.
   			    <ul>
-				      <li>Docker: volume mounts, data containers
+				      <li>Docker: volume mounts*, data containers
 				      <li>Remote Storage: netapp, nfs, fuse-s3fs
 				      <li>Clustered FS: drdb, gluster
 				      <li>Ghetto: rsync
 				   </ul>
-				  <p>
+				  <p>* security implications.
 				</section>
 
 				<section>
@@ -256,11 +257,11 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
 				<section>
 				  <h2>Fakter VII. Port binding</h2>
 				  <h4>Export services via port binding</h4><br>
-				  <p style="text-align:left">Relying on an external service (ex. nginx for php) is a violation of 12factor.  Use a language specific webserver library like `jetty` for java if possible.
-				  <br><br>
-				  <p style="text-align:left"><b>Docker:</b> This is basically solved by default via port binding in docker run command ( docker run -p 8080:8080 )
-				  <br>
-				  <p style="text-align:left"><b>Chef:</b> Harder to solve... Omnibus,  live with violation.
+				  <ul>
+				  <li>This is basically solved by default via port binding in docker run command ( docker run -p 8080:8080 ).
+				  <li>Helps to use something like etcd to track IP:PORT binding for your app when dealing with lots.
+				  </ul>
+
 				</section>
 
 				<section>
@@ -281,7 +282,7 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
 				  <h2>Fakter IX. Disposability</h2>
 				  <h4>Maximize robustness with fast startup and graceful shutdown</h4><br>
 				  <ul>
-				    <li>Otimize to minimize startup ( Docker helps with this! )
+				    <li>Optimize to minimize startup ( Docker helps with this! )
 				    <li>Graceful shutdown ( Finish current reqs or give back to a queue )
 				    <li>Sudden Death ( minimal impact on crash.  Smart LB can help? )
   			  </ul>
