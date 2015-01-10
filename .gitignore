@@ -2,4 +2,4 @@
 user-data
 registry/images
 registry/repositories
-registry/registry.tgz
+registry/*.tgz

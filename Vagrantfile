@@ -68,6 +68,9 @@ Vagrant.configure('2') do |config|
       if i == 1
         c.vm.network 'forwarded_port', guest: 5000, host: 5000
         c.vm.provision :shell, inline: core01_start_registry
+        @services.each do |app|
+          c.vm.provision :shell, inline: core01_fetch_image(app)
+        end
         @applications.each do |app|
           case $mode
           when 'develop'
@@ -78,11 +81,16 @@ Vagrant.configure('2') do |config|
             die "$mode NOT SUPPORTED"
           end
         end
-
       else
+        @services.each do |app|
+          c.vm.provision :shell, inline: fetch_image(app)
+        end
         @applications.each do |app|
           c.vm.provision :shell, inline: fetch_image(app)
         end
+      end
+      @services.each do |app|
+        c.vm.provision :shell, inline: run_image(app)
       end
       @applications.each do |app|
         c.vm.provision :shell, inline: run_image(app)

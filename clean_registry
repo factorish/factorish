@@ -2,4 +2,4 @@
 
 rm -rf ./registry/images
 rm -rf ./registry/repositories
-rm -f ./registry/registry.tgz
+rm -f ./registry/*.tgz

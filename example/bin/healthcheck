@@ -8,40 +8,21 @@ set -eo pipefail
 
 DIR=$(dirname $0)
 
-# functions
-. $DIR/functions
-
 # smart shutdown on SIGINT and SIGTERM
 trap on_exit INT TERM
 
 # wait for the service to become available
-echo "==> sleeping for 20 seconds, then testing if ${APP_NAME} is up."
 sleep 20
 while [[ -z $(netstat -lnt | awk "\$6 == \"LISTEN\" && \$4 ~ \".$PUBLISH\" && \$1 ~ \"$PROTO.?\"") ]] ; do sleep 1; done
-
-echo "==> ${APP_NAME} running..."
-
-# test health of application using the injected HOST and PORT
+# health checks
 if [[ ! -z $PUBLISH ]]; then
-
   set +e
-
-  # wait for the service to become available on PUBLISH port
-  sleep 1 && while [[ -z $(netstat -lnt | awk "\$6 == \"LISTEN\" && \$4 ~ \".$PUBLISH\" && \$1 ~ \"$PROTO.?\"") ]] ; do sleep 1; done
-
   # while the port is listening we're okay
   while [[ ! -z $(netstat -lnt | awk "\$6 == \"LISTEN\" && \$4 ~ \".$PUBLISH\" && \$1 ~ \"$PROTO.?\"") ]] ; do
-    # if using publish information to etcd.
-    [[ -n $ETCD_HOST ]] && publish_to_etcd
-    sleep $SLEEP_TIME # sleep for half the TTL
+    sleep 30
   done
-
   # if the loop quits, something went wrong
   kill `cat /var/run/supervisord.pid`
-
   exit 1
-
-
 fi
-
 wait
