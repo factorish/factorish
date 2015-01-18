@@ -66,8 +66,8 @@ end
 ]
 
 
-def core01_start_registry()
-  $core01_start_registry=<<-EOF
+def start_registry()
+  $start_registry=<<-EOF
     #{@debug}
     echo Creating a Private Registry
     if [[ -n $(netstat -lnt | grep ":5000 ") ]]; then
@@ -93,15 +93,15 @@ def core01_build_image(app)
   $core01_build_image=<<-EOF
     #{@debug}
     echo Building #{app[:repository]} image
-    docker pull 10.0.2.2:5000/#{app[:repository]} > /dev/null 2>&1
+    docker pull 127.0.0.1:5000/#{app[:repository]} > /dev/null 2>&1
     if [[ $? != 0 ]]; then
-      docker build -t 10.0.2.2:5000/#{app[:repository]} #{app[:dockerfile]}
-      docker push 10.0.2.2:5000/#{app[:repository]}
+      docker build -t 127.0.0.1:5000/#{app[:repository]} #{app[:dockerfile]}
+      docker push 127.0.0.1:5000/#{app[:repository]}
     else
       echo - #{app[:repository]} pulled from private registry.
       echo - run ./clean_registry if you expected this to rebuild.
     fi
-    docker tag 10.0.2.2:5000/#{app[:repository]} #{app[:repository]}
+    docker tag 127.0.0.1:5000/#{app[:repository]} #{app[:repository]}
   EOF
 end
 
@@ -109,7 +109,7 @@ def core01_fetch_image(app)
   $core01_fetch_image=<<-EOF
     #{@debug}
     echo Fetching #{app[:repository]} This may take some time.
-      docker pull 10.0.2.2:5000/#{app[:repository]} > /dev/null 2>&1
+      docker pull 127.0.0.1:5000/#{app[:repository]} > /dev/null 2>&1
       if [[ $? != 0 ]]; then
         if [[ -e /home/core/share/registry/#{app[:name]}.tgz ]]; then
           echo - Loading #{app[:repository]} from host cache...
@@ -120,10 +120,10 @@ def core01_fetch_image(app)
           docker pull #{app[:repository]} > /dev/null
           docker save #{app[:repository]} > /home/core/share/registry/#{app[:name]}.tgz
         fi
-        docker tag #{app[:repository]} 10.0.2.2:5000/#{app[:repository]} > /dev/null
-        docker push 10.0.2.2:5000/#{app[:repository]} > /dev/null
+        docker tag #{app[:repository]} 127.0.0.1:5000/#{app[:repository]} > /dev/null
+        docker push 127.0.0.1:5000/#{app[:repository]} > /dev/null
       else
-        docker tag 10.0.2.2:5000/#{app[:repository]} #{app[:repository]}
+        docker tag 127.0.0.1:5000/#{app[:repository]} #{app[:repository]}
       fi
   EOF
 end
@@ -132,8 +132,8 @@ def fetch_image(app)
   $fetch_image=<<-EOF
     #{@debug}
     echo fetching #{app[:repository]}.  This may take some time.
-    docker pull 10.0.2.2:5000/#{app[:repository]} > /dev/null && \
-      docker tag 10.0.2.2:5000/#{app[:repository]} #{app[:repository]}
+    docker pull 127.0.0.1:5000/#{app[:repository]} > /dev/null && \
+      docker tag 127.0.0.1:5000/#{app[:repository]} #{app[:repository]}
   EOF
 end
 
