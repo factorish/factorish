@@ -9,7 +9,7 @@ require_relative 'factorish.rb'
 
 Vagrant.configure('2') do |config|
   config.vm.box = "coreos-#{$coreos_channel}"
-  config.vm.box_version = '>= 308.0.1'
+  config.vm.box_version = ">= #{$min_coreos_version}"
   config.vm.box_url = "http://storage.core-os.net/coreos/amd64-usr/#{$coreos_channel}/coreos_production_vagrant.json"
   config.vm.provider :vmware_fusion do |_, override|
     override.vm.box_url = "http://storage.core-os.net/coreos/amd64-usr/#{$coreos_channel}/coreos_production_vagrant_vmware_fusion.json"
@@ -61,38 +61,8 @@ Vagrant.configure('2') do |config|
         c.vm.provision :shell, inline: 'mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/', privileged: true
       end
 
-      if i == 1
-        $expose_ports.each do |port|
-          c.vm.network 'forwarded_port', guest: port, host: port, auto_correct: true
-        end
-        c.vm.provision :shell, inline: start_registry
-        @services.each do |app|
-          c.vm.provision :shell, inline: core01_fetch_image(app)
-          c.vm.provision :shell, inline: run_image(app)
-        end
-        @applications.each do |app|
-          case $mode
-          when 'develop'
-            c.vm.provision :shell, inline: core01_build_image(app)
-            c.vm.provision :shell, inline: run_image(app)
-          when 'test'
-            c.vm.provision :shell, inline: core01_fetch_image(app)
-              c.vm.provision :shell, inline: run_image(app)
-           else
-            die "$mode NOT SUPPORTED"
-          end
-        end
-      else
-        c.vm.provision :shell, inline: start_registry
-        @services.each do |app|
-          c.vm.provision :shell, inline: fetch_image(app)
-          c.vm.provision :shell, inline: run_image(app)
-        end
-        @applications.each do |app|
-          c.vm.provision :shell, inline: fetch_image(app)
-          c.vm.provision :shell, inline: run_image(app)
-        end
-      end
+      c.vm.provision :shell, inline: 'echo use systemctl and journalctl to view progress of startup'
+
     end
   end
 end
