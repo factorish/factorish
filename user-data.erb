@@ -177,9 +177,12 @@ write_files:
       else
         echo $1 > /run/factorish/fetch.lock
       fi
+      while etcdctl get /factorish/builds/$2/building >/dev/null 2>&1; do
+        sleep 10
+      done
       echo Building $2 image
-      echo checking if 127.0.0.1:5000/$2 already exists
-      if [[ ! "$(docker search 127.0.0.1:5000/$2 | wc -l)" == "2" ]]; then
+      echo fetching 127.0.0.1:5000/$2 if it already exists
+      if ! docker pull 127.0.0.1:5000/$2; then
         echo not found, lets build it.
         etcdctl ls /factorish/builds >/dev/null 2>&1 || etcdctl mkdir /factorish/builds/$2 >/dev/null 2>&1
         if etcdctl mk /factorish/builds/$2/building 1 >/dev/null 2>&1; then
@@ -198,9 +201,7 @@ write_files:
           sleep 10
         done
       fi
-      if [[ "$(docker search 127.0.0.1:5000/$2 | wc -l)" == "2" ]]; then
-        echo found, lets fetch it.
-        docker pull 127.0.0.1:5000/$2
+      if docker pull 127.0.0.1:5000/$2; then
         docker tag -f 127.0.0.1:5000/$2 $2
         echo - $2 pulled from private registry.
         echo - run ./clean_registry if you expected this to rebuild.
