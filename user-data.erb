@@ -78,7 +78,6 @@ coreos:
 
         [Service]
         EnvironmentFile=/etc/environment
-        EnvironmentFile=/etc/network-environment
         TimeoutStartSec=0
         ExecStartPre=-/usr/bin/docker kill factorish-<%= service[:name] %>
         ExecStartPre=-/usr/bin/docker rm factorish-<%= service[:name] %>
@@ -97,7 +96,6 @@ coreos:
 
         [Service]
         EnvironmentFile=/etc/environment
-        EnvironmentFile=/etc/network-environment
         TimeoutStartSec=0
         ExecStartPre=-/usr/bin/docker kill factorish-<%= app[:name] %>
         ExecStartPre=-/usr/bin/docker rm factorish-<%= app[:name] %>

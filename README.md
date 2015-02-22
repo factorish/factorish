@@ -19,6 +19,8 @@ What does it do?
 
 Launching a factorish development environment is as simple as running `vagrant up`.   The default cluster size is 3 VMs and as the first VM provisions it will start a private docker registry which it will use to host your images so that you only have to build or download them once.   It will then build your application as defined in the `factorish.rb` file and will launch it on each VM.
 
+Factorish now supports using [flannel](https://github.com/coreos/flannel) networking by default.  This means that each container will gets its own IP address and port forwarding is not needed.  if you wish to skip flannel you can set an environment variable `disable_flannel=1` before running vagrant. 
+
 ```
 $ vagrant up
 rewriting userdata
