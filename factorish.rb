@@ -77,7 +77,7 @@ end
     docker_options: [
       "-p 8080:8080",
       "-e PUBLISH=8080",
-      "-e HOST=$COREOS_PRIVATE_IPV4"
+      "-e ETCD_HOST=$COREOS_PRIVATE_IPV4"
     ],
     dockerfile: "/home/core/share/example",
     command: ""

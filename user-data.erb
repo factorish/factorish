@@ -1,6 +1,8 @@
 #cloud-config
 
 coreos:
+  update:
+    reboot-strategy: off
   etcd:
       #generate a new token for each unique cluster from https://discovery.etcd.io/new
       <%= @etcd_discovery %>
@@ -220,6 +222,15 @@ write_files:
       }
       function build_<%= app[:name] %>() {
         docker build -t <%= app[:repository] %> <%=app[:dockerfile] %>
+      }
+      function log_<%= app[:name] %>() {
+        docker logs -f factorish-<%= app[:name] %>
+      }
+      function journal_<%= app[:name] %>() {
+        journalctl -f -u factorish-<%= app[:name] %>
+      }
+      function push_<%= app[:name] %>() {
+        docker push -f <%= app[:repository] %> 127.0.0.1:5000/<%= app[:repository] %>
       }
       function <%= app[:name] %>() {
         /usr/bin/docker exec -it factorish-<%= app[:name] %> bash

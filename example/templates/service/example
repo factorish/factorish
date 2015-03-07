@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+
+cd /app/example
+
+exec chpst -u app gunicorn -b 0.0.0.0:8080 app:app

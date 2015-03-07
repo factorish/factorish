@@ -6,6 +6,15 @@
 FROM python:2
 MAINTAINER Paul Czarkowski "paul@paulcz.net"
 
+# Define working directory.
+WORKDIR /app
+
+# Define default command.
+CMD ["/app/bin/boot"]
+
+# Expose ports.
+EXPOSE 8080
+
 # Base Deps
 RUN \
   apt-get update && apt-get install -yq \
@@ -14,6 +23,7 @@ RUN \
   net-tools \
   sudo \
   wget \
+  curl \
   vim \
   strace \
   lsof \
@@ -21,9 +31,11 @@ RUN \
   lsb-release \
   locales \
   socat \
-  supervisor \
+  runit \
   --no-install-recommends && \
-  locale-gen en_US.UTF-8
+  locale-gen en_US.UTF-8 && \
+  apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 
 # install etcdctl and confd
 RUN \
@@ -34,16 +46,8 @@ RUN \
 
 ADD . /app
 
-# Define working directory.
-WORKDIR /app
-
 RUN \
   useradd -d /app -c 'application' -s '/bin/false' app && \
   chmod +x /app/bin/* && \
   pip install -r /app/example/requirements.txt
 
-# Define default command.
-CMD ["/app/bin/boot"]
-
-# Expose ports.
-EXPOSE 8080

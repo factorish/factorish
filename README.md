@@ -96,7 +96,7 @@ Application Framework
 
 * `templates/supervisor.conf` is a template that `confd` writes out for `supervisor` to be able to run the application as well as `confd` itself and `bin/publish_etcd`
 
-* `supervisor` is a lightweight python based process supervisor.  Each app that it is configured to run will send its logs/output to `stdout` of supervisor which means that you get all the benefits of a process supervisor but still keep the 12 factor style logging to stdout through to the docker logging subsystems.
+* `runit` is a lightweight process supervisor.  Each app that it is configured to run will send its logs/output to `stdout` of supervisor which means that you get all the benefits of a process supervisor but still keep the 12 factor style logging to stdout through to the docker logging subsystems.
 
 * `bin/boot` the startup script for the example application.   It sets up a bunch of environment variables which can be passed in via the `docker run` comamnd to affect how the application runs,  It then runs `confd` once to do an initial configuration before running `supervisor` to start your application and other componments.
 

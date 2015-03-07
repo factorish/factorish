@@ -25,7 +25,7 @@ export PROTO=${PROTO:-tcp}
 export SERVICES_EXAMPLE_TEXT=${SERVICES_EXAMPLE_TEXT:-"father"}
 
 if [[ -n $ETCD_HOST ]]; then
-  echo "==> $HOST or $ETCD_HOST set.  starting ${APP_NAME} etcd support."
+  echo "==> ETCD_HOST set.  starting ${APP_NAME} etcd support."
   export ETCD_HOST=${ETCD_HOST:-$HOST}
   export ETCD_PORT=${ETCD_PORT:-4001}
   export ETCD="$ETCD_HOST:$ETCD_PORT"
@@ -35,6 +35,7 @@ if [[ -n $ETCD_HOST ]]; then
   export CONFD_OPTIONS="-node $ETCD -config-file /app/confd_etcd.toml"
   export SLEEP_TIME=$(($ETCD_TTL/2))
   configure_etcd
+  mv /app/conf.d/optional/service-confd.toml /app/conf.d/service-confd.toml
   # App specific
   etcd_set_default text $SERVICES_EXAMPLE_TEXT
 else
@@ -43,6 +44,9 @@ else
   export SLEEP_TIME=10
   # App specific equiv to etcd /services/example/text
 fi
+
+# make service directories based on service templates
+for service in $(ls /app/templates/service/); do mkdir -p /etc/service/$service; done
 
 # wait for confd to run once and install initial templates
 until confd -onetime $CONFD_OPTIONS; do
@@ -55,6 +59,6 @@ echo Starting ${APP_NAME}
 # smart shutdown on SIGINT and SIGTERM
 trap on_exit INT TERM
 
-/usr/bin/supervisord -c /etc/supervisord.conf
+exec /app/bin/my_init
 
 exit 1
