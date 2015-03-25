@@ -46,7 +46,13 @@ else
 fi
 
 # make service directories based on service templates
-for service in $(ls /app/templates/service/); do mkdir -p /etc/service/$service; done
+for service in $(ls /app/templates/service/); do
+  if [[ ${service} == "confd" && -z ${ETCD_HOST} ]]; then
+    echo "skipping confd service"
+  else
+    mkdir -p /etc/service/$service
+  fi
+done
 
 # wait for confd to run once and install initial templates
 until confd -onetime $CONFD_OPTIONS; do

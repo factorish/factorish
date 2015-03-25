@@ -15,11 +15,20 @@ You can find a good example of using this (although a much less refined version)
 What does it do?
 ----------------
 
-`factorish` is a is mainly a very opinionated `Vagrantfile` which spins up a development environment consisting of a number of CoreOS servers (that form an `etcd` cluster) and a helper `factorish.rb` which contains some modifiable default variables and functions for building and launching applications which are defined in a fairly simple hash.
+`factorish` is a is mainly a very opinionated `Vagrantfile` which spins up a development environment consisting of a number of CoreOS servers (that form an `etcd` cluster) and a helper `factorish.rb` which reads configuration data from `factorish.yml` and environment variables builds and launches the services and applications which are defined in the `factorish.yml` file.
 
-Launching a factorish development environment is as simple as running `vagrant up`.   The default cluster size is 3 VMs and as the first VM provisions it will start a private docker registry which it will use to host your images so that you only have to build or download them once.   It will then build your application as defined in the `factorish.rb` file and will launch it on each VM.
+You can build and run the `factorish/example` image to see the basic functionality using environment variables for service discovery by running:
 
-Factorish now supports using [flannel](https://github.com/coreos/flannel) networking by default.  This means that each container will gets its own IP address and port forwarding is not needed.  if you wish to skip flannel you can set an environment variable `disable_flannel=1` before running vagrant. 
+```
+$ docker build -t factorish/example example
+$ docker run -ti -e SERVICES_EXAMPLE_TEXT=father -p 8080:8080 factorish/example
+$ curl localhost:8080
+Luke, I am your father
+```
+
+However launching a factorish development environment is as simple as running `vagrant up`.   The default cluster size is 3 VMs and as the first VM provisions it will start a private docker registry which it will use to host your images so that you only have to build or download them once.   It will then build your application as defined in the `factorish.rb` file and will launch it on each VM.
+
+Factorish now supports using [flannel](https://github.com/coreos/flannel) networking by default.  This means that each container will gets its own IP address and port forwarding is not needed.  if you wish to skip flannel you can set `coreos.flannel.enabled` to `false` in `factorish.yml` before running vagrant. 
 
 ```
 $ vagrant up

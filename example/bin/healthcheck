@@ -8,9 +8,6 @@ set -eo pipefail
 
 DIR=$(dirname $0)
 
-# smart shutdown on SIGINT and SIGTERM
-trap on_exit INT TERM
-
 # wait for the service to become available
 sleep 20
 while [[ -z $(netstat -lnt | awk "\$6 == \"LISTEN\" && \$4 ~ \".$PUBLISH\" && \$1 ~ \"$PROTO.?\"") ]] ; do sleep 1; done
@@ -22,7 +19,7 @@ if [[ ! -z $PUBLISH ]]; then
     sleep 30
   done
   # if the loop quits, something went wrong
-  kill `cat /var/run/supervisord.pid`
+  kill 1
   exit 1
 fi
-wait
+

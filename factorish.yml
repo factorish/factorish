@@ -1,0 +1,39 @@
+factorish:
+  mode: develop
+  memory: 512
+  cpus: 1
+  instances: 3
+  expose_docker: True
+  expose_etcd: True
+  expose_registry: True
+  expose_ports:
+    - 8080
+  coreos:
+    channel: beta
+    min_version: 554
+    flannel:
+      enabled: True
+      network: 10.1.0.0/16
+  applications:
+    registry:
+      repository: registry
+      docker_options:
+        - '-p 5000:5000'
+        - '-e GUNICORN_OPTS=[--preload]'
+        - '-e search_backend='
+        - '-v /home/core/share/registry:/tmp/registry'
+      command:
+    registrator:
+      repository: progrium/registrator
+      docker_options:
+        - '-v /var/run/docker.sock:/tmp/docker.sock:ro'
+        - '-h $HOSTNAME'
+      command: '-ttl 30 -ttl-refresh 20 etcd://$COREOS_PRIVATE_IPV4:4001/services'
+    example:
+      repository: factorish/example
+      docker_options:
+        - '-p 8080:8080'
+        - '-e PUBLISH=8080'
+        - '-e ETCD_HOST=$COREOS_PRIVATE_IPV4'
+      dockerfile: /home/core/share/example
+      command:

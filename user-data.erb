@@ -69,41 +69,27 @@ coreos:
     - name: fleet.service
       command: start
 <% end %>
-<% @services.each do |service| %>
-    - name: factorish-<%= service[:name] %>.service
+<% @applications.each do |name,app| %>
+    - name: factorish-<%= name %>.service
       command: start
       content: |
         [Unit]
-        Description=Factorish <%= service[:name] %>
-        Requires=docker.service
-        After=docker.service
-
-        [Service]
-        EnvironmentFile=/etc/environment
-        TimeoutStartSec=0
-        ExecStartPre=-/usr/bin/docker kill factorish-<%= service[:name] %>
-        ExecStartPre=-/usr/bin/docker rm factorish-<%= service[:name] %>
-        ExecStartPre=-/run/factorish/fetch_service <%= service[:name] %> <%= service[:repository] %>
-        ExecStart=/bin/sh -c "/usr/bin/docker run --rm <%= service[:docker_options].join(' ') %> --name factorish-<%= service[:name] %> <%= service[:repository]%> <%= service[:command] %>"
-        ExecStop=/usr/bin/docker stop factorish-<%= service[:name] %>
-<% end %>
-<% @applications.each do |app| %>
-    - name: factorish-<%= app[:name] %>.service
-      command: start
-      content: |
-        [Unit]
-        Description=Factorish <%= app[:name] %>
+        Description=Factorish <%= name %>
         Requires=factorish-registry.service
         After=factorish-registry.service
 
         [Service]
         EnvironmentFile=/etc/environment
         TimeoutStartSec=0
-        ExecStartPre=-/usr/bin/docker kill factorish-<%= app[:name] %>
-        ExecStartPre=-/usr/bin/docker rm factorish-<%= app[:name] %>
-        ExecStartPre=-/run/factorish/build_image <%= app[:dockerfile] %> <%= app[:repository] %>
-        ExecStart=/bin/sh -c "/usr/bin/docker run --rm <%= app[:docker_options].join(' ') %> --name factorish-<%= app[:name] %> <%= app[:repository]%> <%= app[:command] %>"
-        ExecStop=/usr/bin/docker stop factorish-<%= app[:name] %>
+        ExecStartPre=-/usr/bin/docker kill factorish-<%= name %>
+        ExecStartPre=-/usr/bin/docker rm factorish-<%= name %>
+  <% if app.has_key?('dockerfile') && app['dockerfile'] %>
+        ExecStartPre=-/run/factorish/build_image <%= app['dockerfile'] %> <%= app['repository'] %> <%= name %>
+  <% else %>
+        ExecStartPre=-/run/factorish/fetch_image <%= name %> <%= app['repository'] %>
+  <% end %>
+        ExecStart=/bin/sh -c "/usr/bin/docker run --rm <%= app['docker_options'].join(' ') %> --name factorish-<%= name %> <%= app['repository']%> <%= app['command'] %>"
+        ExecStop=/usr/bin/docker stop factorish-<%= name %>
 <% end %>
 write_files:
   - path: /etc/systemd/system/docker.service.d/50-insecure-registry.conf
@@ -112,7 +98,7 @@ write_files:
         Environment=DOCKER_OPTS='--insecure-registry="127.0.0.1:5000"'
   - path: /etc/motd
     content: "Example Demo\n"
-  - path: /run/factorish/fetch_service
+  - path: /run/factorish/fetch_image
     permissions: '0755'
     content: |
       #!/bin/bash
@@ -121,15 +107,15 @@ write_files:
         echo 'Usage: fetch_service <name> <repository>'
         exit 1
       fi
-      if [[ -e /run/factorish/fetch.lock ]]; then
+      if [[ -e /run/factorish/fetch_$1.lock ]]; then
         echo -n 'waiting my turn'
-        while [[ -e /run/factorish/fetch.lock ]]; do
+        while [[ -e /run/factorish/fetch_$1.lock ]]; do
           sleep 5
           echo -n .
         done
         echo .
       else
-        echo $1 > /run/factorish/fetch.lock
+        echo $1 > /run/factorish/fetch_$1.lock
       fi
       echo Initializing service - $1
       etcdctl ls /factorish/services/$1 >/dev/null 2>&1 || etcdctl mkdir /factorish/services/$1 >/dev/null 2>&1
@@ -145,7 +131,7 @@ write_files:
         fi
         etcdctl rm /factorish/services/$1/fetching
         etcdctl mk /factorish/services/$1/cached
-        rm -f /run/factorish/fetch.lock
+        rm -f /run/factorish/fetch_$1.lock
         exit 0
       else
         if ! etcdctl get /factorish/services/$1/cached; then
@@ -157,47 +143,47 @@ write_files:
         docker images registry | grep registry > /dev/null || \
           docker load < /home/core/share/registry/$1.tgz > /dev/null 2>&1
       fi
-      rm -f /run/factorish/fetch.lock
+      rm -f /run/factorish/fetch_$1.lock
   - path: /run/factorish/build_image
     permissions: '0755'
     content: |
       #!/bin/bash
       set -x
       if [[ -z $1 || -z $2 ]]; then
-        echo 'Usage: build_image <dockerfile> <repository>'
+        echo 'Usage: factorish_image <dockerfile> <repository> <name>'
         exit 1
       fi
-      if [[ -e /run/factorish/build.lock ]]; then
+      if [[ -e /run/factorish/build_$3.lock ]]; then
         echo -n 'waiting my turn'
-        while [[ -e /run/factorish/build.lock ]]; do
+        while [[ -e /run/factorish/build_$3.lock ]]; do
           sleep 5
           echo -n .
         done
         echo .
       else
-        echo $1 > /run/factorish/fetch.lock
+        echo $1 > /run/factorish/build_$3.lock
       fi
-      while etcdctl get /factorish/builds/$2/building >/dev/null 2>&1; do
+      while etcdctl get /factorish/builds/$3/building >/dev/null 2>&1; do
         sleep 10
       done
       echo Building $2 image
       echo fetching 127.0.0.1:5000/$2 if it already exists
       if ! docker pull 127.0.0.1:5000/$2; then
         echo not found, lets build it.
-        etcdctl ls /factorish/builds >/dev/null 2>&1 || etcdctl mkdir /factorish/builds/$2 >/dev/null 2>&1
-        if etcdctl mk /factorish/builds/$2/building 1 >/dev/null 2>&1; then
+        etcdctl ls /factorish/builds >/dev/null 2>&1 || etcdctl mkdir /factorish/builds/$3 >/dev/null 2>&1
+        if etcdctl mk /factorish/builds/$3/building 1 >/dev/null 2>&1; then
           docker build -t 127.0.0.1:5000/$2 $1
           docker tag -f 127.0.0.1:5000/$2 $2
           docker push 127.0.0.1:5000/$2
-          etcdctl rm /factorish/builds/$2/building
-          etcdctl mk /factorish/builds/$2/built
-          rm -f /run/factorish/build.lock
+          etcdctl rm /factorish/builds/$3/building
+          etcdctl mk /factorish/builds/$3/built
+          rm -f /run/factorish/build_$3.lock
           echo finished.
           exit 0
         fi
       fi
-      if ! etcdctl get /factorish/builds/$2/built; then
-        while etcdctl get /factorish/builds/$2/building >/dev/null 2>&1; do
+      if ! etcdctl get /factorish/builds/$3/built; then
+        while etcdctl get /factorish/builds/$3/building >/dev/null 2>&1; do
           sleep 10
         done
       fi
@@ -206,34 +192,34 @@ write_files:
         echo - $2 pulled from private registry.
         echo - run ./clean_registry if you expected this to rebuild.
       fi
-      rm -f /run/factorish/build.lock
+      rm -f /run/factorish/build_$3.lock
   - path: /etc/profile.d/functions.sh
     permissions: '0755'
     content: |
-<% @applications.each do |app| %>
-      function run_<%= app[:name] %>() {
+<% @applications.each do |name, app| %>
+      function run_<%= name %>() {
         eval `cat /etc/environment | sed "s/^/export /"`
-        echo "Running factorish-<%= app[:name] %>"
-        docker run  -d <%= app[:docker_options].join(' ') %> --name factorish-<%= app[:name] %> <%= app[:repository]%>
+        echo "Running factorish-<%= name %>"
+        docker run  -d <%= app['docker_options'].join(' ') %> --name factorish-<%= name %> <%= app['repository']%> <%= app['command'] %>
       }
-      function kill_<%= app[:name] %>() {
-        /usr/bin/docker kill factorish-<%= app[:name] %>
-        /usr/bin/docker rm factorish-<%= app[:name] %>
+      function kill_<%= name %>() {
+        /usr/bin/docker kill factorish-<%= name %>
+        /usr/bin/docker rm factorish-<%= name %>
       }
-      function build_<%= app[:name] %>() {
-        docker build -t <%= app[:repository] %> <%=app[:dockerfile] %>
+      function build_<%= name %>() {
+        docker build -t <%= app['repository'] %> <%=app['dockerfile'] %>
       }
-      function log_<%= app[:name] %>() {
-        docker logs -f factorish-<%= app[:name] %>
+      function log_<%= name %>() {
+        docker logs -f factorish-<%= name %>
       }
-      function journal_<%= app[:name] %>() {
-        journalctl -f -u factorish-<%= app[:name] %>
+      function journal_<%= name %>() {
+        journalctl -f -u factorish-<%= name %>
       }
-      function push_<%= app[:name] %>() {
-        docker push -f <%= app[:repository] %> 127.0.0.1:5000/<%= app[:repository] %>
+      function push_<%= name %>() {
+        docker push -f <%= app['repository'] %> 127.0.0.1:5000/<%= app['repository'] %>
       }
-      function <%= app[:name] %>() {
-        /usr/bin/docker exec -it factorish-<%= app[:name] %> bash
+      function <%= name %>() {
+        /usr/bin/docker exec -it factorish-<%= name %> bash
       }
 <% end %>
       function cleanup() {

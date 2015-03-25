@@ -1,88 +1,59 @@
+FACTORISH_SETTINGS = ENV['FACTORISH_SETTINGS'] || 'factorish.yml'
+
+SETTINGS = YAML.load_file(FACTORISH_SETTINGS)['factorish']
+
 # Setting for VirtualBox VMs
 #$vb_gui = false
-$vb_memory = 512
-$vb_cpus = 1
+$vb_memory = SETTINGS['memory']
+$vb_cpus = SETTINGS['cpus']
 
 # Core OS Channel
 # alpha, beta, stable
-$coreos_channel = 'beta'
+$coreos_channel = SETTINGS['coreos']['channel']
+$min_coreos_version = SETTINGS['coreos']['min_version']
 
-if ENV.has_key?('disable_flannel')
-  $min_coreos_version = '308.0.1'
-  $registrator_network = '-ip $COREOS_PRIVATE_IPV4'
-else
+if !!SETTINGS['coreos']['flannel']['enabled']
   @flannel = true
-  @flannel_network = ENV['flannel_network'] ||= '10.1.0.0/16'
+  @flannel_network = SETTINGS['coreos']['flannel']['network']
   $registrator_network = '-internal'
-  $min_coreos_version = '554'
+else
+  $registrator_network = '-ip $COREOS_PRIVATE_IPV4'
 end
+
+if SETTINGS['applications'].has_key?('registrator')
+  SETTINGS['applications']['registrator']['command'].insert(0, "#{$registrator_network} ")
+end
+
+puts SETTINGS['applications'] if $debug
 
 # Size of the CoreOS cluster created by Vagrant
-if ENV['instances']
-  $num_instances = ENV['instances'].to_i
-else
-  $num_instances = 3
-end
+$num_instances = SETTINGS['instances']
 
 # Expose Docker / ETCD ports.
 # If there ar more than one VM, will autocorrect to avoid conflicts.
-$expose_docker_tcp = 4243
-$expose_etcd_tcp = 4001
-$expose_registry = 5000
+$expose_docker_tcp = 4243 if !!SETTINGS['expose_docker']
+$expose_etcd_tcp = 4001 if !!SETTINGS['expose_etcd']
+$expose_registry = 5000 if !!SETTINGS['expose_registry']
 
 # Expose custom application ports.
 # array of ports to be exposed for your applications.
-$expose_ports=[8080]
+$expose_ports = SETTINGS['export_ports']
 
 # Mode to start in.
 # `develop` will build images from scratch
 # `test` will try to download from registry
-$mode = ENV['mode'] ||= 'develop' # develop|test
+$mode = ENV['mode'] ||= SETTINGS['mode'] # develop|test
 
-if ENV['DEBUG']
+$debug = ENV['DEBUG']
+
+if $debug
   @debug = 'set -x'
 else
   @debug = ''
 end
 
-# Infrastructure containers such as docker registry
-@services = [
-  {
-    name: 'registry',
-    repository: 'registry',
-    docker_options: [
-      '-p 5000:5000',
-      '-e GUNICORN_OPTS=[--preload]',
-      '-e search_backend=',
-      '-v /home/core/share/registry:/tmp/registry'
-    ],
-    command: ''
-  },
-  {
-    name: 'registrator',
-    repository: 'progrium/registrator',
-    docker_options: [
-      '-v /var/run/docker.sock:/tmp/docker.sock:ro',
-      '-h $HOSTNAME'
-    ],
-    command: "-ttl 30 -ttl-refresh 20 #{$registrator_network} etcd://$COREOS_PRIVATE_IPV4:4001/services"
-  }
-]
-
 # Describe your applications in this hash
-@applications = [
-  {
-    name: "example",
-    repository: "factorish/example",
-    docker_options: [
-      "-p 8080:8080",
-      "-e PUBLISH=8080",
-      "-e ETCD_HOST=$COREOS_PRIVATE_IPV4"
-    ],
-    dockerfile: "/home/core/share/example",
-    command: ""
-  }
-]
+@applications = SETTINGS['applications']
 
 def write_user_data(num_instances)
   require 'erb'
@@ -105,3 +76,4 @@ unless ENV['nodisco']
     write_user_data($num_instances)
   end
 end
+
