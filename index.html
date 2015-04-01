@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>Factorish: The Twelve-Fakter App</title>
+		<title>Factorish: The Twelve-Faktor App</title>
 
 		<meta name="description" content="The Twelve-Fakter App">
 		<meta name="author" content="Paul Czarkowski">
@@ -46,13 +46,42 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-				  <h1>Factorish</h1>
-					<h2>The Twelve-Fakter App</h2>
+					<h2>Factorish: The Twelve-Faktor App</h2>
+					<h3><a href="http://factorish.github.io/factorish">http://factorish.github.io/factorish</a></h3>
 					<p><img src="images/tofurkey.jpg"><br><small>http://www.tofurky.com/</small><br>
-					<h3><a href="http://tech.paulcz.net/factorish">http://tech.paulcz.net/factorish</a></h3>
 					<p>
 						<small>Created by <a href="http://tech.paulcz.net">Paul Czarkowski</a> / <a href="http://twitter.com/pczarkowski">@pczarkowski</a></small>
 					</p>
+				</section>
+
+				<section>
+					<h2>Who am I</h2>
+ 					<p><img src="images/sysadmin.jpg"><br>
+ 					<p>Cloud Engineer @ Bluebox
+ 					<aside class="notes">
+ 					* I am a sysadmin<br>
+ 					* get called rude names like cloud engineer or devop
+ 					</aside>
+				</section>
+
+				<section>
+					<h2>Factorish: The Twelve-Faktor App</h2>
+						<p><img src="images/donkey-carrot.png">
+ 					<aside class="notes">
+ 					* lot of noise in docker community about how to docker<br>
+ 					* single process, small images, etc.<br>
+ 					* mostly bullshit.<br>
+ 					* factorish is my way to bring some pragmatism to this mess.
+ 					</aside>
+				</section>
+
+				<section>
+					<h2>The Twelve-Factor App</h2>
+					<h3><a href="http://12factor.net">12factor.net</a></h3>
+						<p><img src="images/unicorn.jpg"><br><small>http://www.foodbeast.com/news/move-over-horsemeat-unicorn-cuts-are-all-the-rage/</small>
+ 					<aside class="notes">
+ 					Is everyone familiar with the concept of 12 factor apps?<br>
+ 					</aside>
 				</section>
 
 				<section>
@@ -68,12 +97,29 @@
  						<li>Minimize divergence between development and production
  						<li>And can scale up without significant changes
  					</ul>
+ 					<aside class="notes">
+ 					* 12 factor is a manifest of how to write applications in the new cloudy / microservices way.<br>
+ 					* TLDR of 12factor is 'this is how to write apps to run on heroku'<br>
+ 					* even if not docker/heroku, think about 12factor when writing apps/CM.
+ 					</aside>
 				</section>
 
 				<section>
 					<h2>The Twelve-Factor App</h2>
-					<h3><a href="http://12factor.net">12factor.net</a></h3>
+					<h3>Dockerized</h3>
 						<p><img src="images/unicorn_meat.jpg"><br><small>http://www.thinkgeek.com/product/e5a7/?srp=2</small>
+ 					<aside class="notes">
+ 					* grind up unicorn meat and pack it into container to ship it around.
+ 					</aside>
+				</section>
+
+				<section>
+					<h2>Your App</h2>
+						<p><img src="images/donkey-cart.jpg"><br>
+ 					<aside class="notes">
+ 					* meanwhile the rest of us have apps that look like this<br>
+ 					* not only is it decidely not a unicorn, but is weighed down by baggage
+ 					</aside>
 				</section>
 
 				<section>
@@ -87,26 +133,49 @@
  						<li>Runs under a web server like Apache or Tomcat.
  						<li>Looks different in Development and Production (and all the other steps).
  					</ul>
+ 					<aside class="notes">
+ 					* Your app has probably been around for a while<br>
+ 					* some of it might be CM. <br>
+ 					* hand deployed to production <br>
+ 					* development not like production
+ 					</aside>
 				</section>
 
 				<section>
-					<h2>Your App</h2>
-						<p><img src="images/spam_can_open.jpg"><br><small>http://tastyislandhawaii.com/2007/12/07/tulip-vs-treet-vs-spam-musubi-showdown/</small>
- 					<h1 class="fragment">Wordpress</h1>
-				</section>
-
-				<section>
-				  <h1>Factorish</h1>
 					<h2>The Twelve-Fakter App</h2>
+					<h3>Dockerized</h3>
+						<p><img src="images/spam_can_open.jpg"><br><small>http://tastyislandhawaii.com/2007/12/07/tulip-vs-treet-vs-spam-musubi-showdown/</small>
+ 					<p>The Container is your app
+ 					<aside class="notes">
+ 					* however we can grind it up into a paste and put it in a container.
+ 					* aside from the label, can't tell it apart from unicorn.
+ 					</aside>
+				</section>
+
+				<section>
+					<h2>The Twelve-Fakter App</h2>
+						<p><img src="images/emoji_poop.png">
+ 					<aside class="notes">
+ 					* polishing a turd ... but a turd that makes you money!<br>
+ 					* if you put it in a box, nobody knows theres a turd in there.
+ 					</aside>
+				</section>
+
+				<section>
+					<h2>The Twelve-Fakter App</h2>
+					<h3><a href="http://tech.paulcz.net/12Fakter">http://tech.paulcz.net/12Fakter</a></h3>
 					<br>
  					<ul>
- 						<li>You want to take advantage of newer infrastructure <br>( Docker, CoreOS, PAAS ).
- 						<li>Can't <i>fix</i> the app.
+ 						<li>You want to modernize your application.
+ 						<li>You probably can't <i>fix</i> the app.
  						<li>No time to rewrite the app.
- 						<li>Let's fake it.
+ 						<li>
  					</ul>
- 					<br><br><BR>
-					<h3><a href="https://github.com/paulczar/factorish">http://tech.paulcz.net/factorish</a></h3>
+ 					<aside class="notes">
+ 					* have an app, it makes money, but its hard to run, hard to maintain.<br>
+ 					* you like the idea of runtime configured immutable infrastructure.<br>
+ 					* lets talk through the 12factors and talk about how to fake it.
+ 					</aside>
 				</section>
 
 				<section>
@@ -122,16 +191,28 @@
 				    </ul>
 				    <li>https://github.com/paulczar/factorish
 				  </ul>
+ 					<aside class="notes">
+ 					* Factor 1 is all about having your code and everything required to run your code in source control.<br>
+ 					* scripts ( cookbooks etc ) to build, deploy, and run your code.  share versioning.<br>
+ 					* vagrantfile to ensure everyone has exact same experience.
+ 					</aside>
 				</section>
 
 				<section>
 				  <h2>Fakter II. Dependencies</h2>
 				  <h4>Explicitly declare and isolate dependencies</h4><br><br>
-				  <p><b>Easy wins with Docker</b></p>
 				  <ul>
-				    <li>Declaration - Dockerfile
-				    <li>Isolation - `docker run`
+				    <li>Declaration: Dockerfile
+				    <li>Isolation: `docker run`
 				  </ul>
+				  <br><br>
+ 					<aside class="notes">
+ 					* Factor 2 tells us that all deps should be declared and isolated.<br>
+ 					* declares all dependencies, completely and exactly, not reliance on system packages<br>
+ 					* dependency isolation tool during execution to ensure that no implicit dependencies 'leak in' <br>
+ 					* Ruby, `gemfile` is declaration,  `bundle install` is isolation.
+ 					* Docker, `Dockerfile` is declaration, `docker run` is isolation.
+ 					</aside>
 				</section>
 
 				<section>
@@ -166,6 +247,11 @@ EXPOSE 8080
 				    <li>Confd - {{ getv "/text" }}
 				    <li>`sed -i "s/xxxTEXTxxx/${TEXT}" /etc/config.conf`
 				  </ul>
+ 					<aside class="notes">
+ 					* According to factor 3, all configuration should be done via environment<br>
+ 					* Can I opensource this code without compromising secrets / passwords ?<br>
+ 					* internal application config that doesn't change between envs should remain in code.
+ 					</aside>
 				</section>
 
 				<section>
@@ -207,6 +293,12 @@ text: {{ getv "/services/example/text" }}
 				      <li>Ghetto: rsync
 				   </ul>
 				  <p>* security implications.
+ 					<aside class="notes">
+ 					* A backing service is any service the app consumes over the network as part of its normal operation<br>
+ 					* no distinction between local and third party services ... i.e. local mysql db = rds<br>
+ 					* ofc do have to manage that servce, but outside pervue of your app.<br>
+ 					* change out backing services without code change ( change env variable! )
+ 					</aside>
 				</section>
 
 				<section>
@@ -231,17 +323,24 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
   -e DB_PASSWORD=wordpress $DB_HOST=my.database.com \
   -v /mnt/nfs/wordpress:/app/wordpress factorish/wordpress
 				  </code></pre>
-
 				</section>
 
 				<section>
 				  <h2>Fakter V. Build, release, run</h2>
 				  <h4>Strictly separate build and run stages</h4><br><br>
 				  <ul>
-				    <li>Build: `docker build -t myapp:1.3.2 .`
-				    <li>Release: ...
-				    <li>Run: `docker run -d -e TEXT=bacon myapp:1.3.2`
+				    <li>Build: `docker build -t myapp:base .`
+				    <li>Release: `docker build -t myapp:v1.3.2 .`
+				    <li>Run: `docker run -d myapp:v1.3.2`
+				    <br><br>
+				    <li class="fragment">Release/Run: `docker run -d -e TEXT=bacon myapp:v1.3.2`
 				  </ul>
+ 					<aside class="notes">
+* The build stage takes your code repo and converts it into an executable bundle known as a build.  Using a version of the code at a commit specified by the deployment process, the build stage fetches and vendors dependencies and compiles binaries and assets.<br>
+* The release stage takes the build produced by the build stage and combines it with the deploy’s current config. The resulting release contains both the build and the config and is ready for immediate execution in the execution environment.<br>
+* The run stage runs the app in the execution environment, by launching some set of the app’s processes against a selected release<br>
+* IMO its okay to combine Release/Run steps in a docker based environment. - but do lose some rollback capability.
+ 					</aside>
 				</section>
 
 				<section>
@@ -250,58 +349,89 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
 				  <ul>
 				    <li>Applications should be treated as stateless processes.
 				    <li>All data that needs to be persisted should be done via backing services.
-				    <li>example: store session data in redis or memcache.
+				    <li>example: `session` data stored in redis or memcache.
 				  </ul>
+ 					<aside class="notes">
+ 					* No state should be persisted to disk by the application, rather sent to a backing service.<br>
+ 					* example storing session data in redis or memcache.<br>
+ 					* App can use local mem or disk for short lived transactional cache.<br>
+ 					* Sticky sessions are bad, do not use them, or live with the consequences.
+ 					</aside>
 				</section>
 
 				<section>
 				  <h2>Fakter VII. Port binding</h2>
 				  <h4>Export services via port binding</h4><br>
 				  <ul>
-				  <li>This is basically solved by default via port binding in docker run command ( docker run -p 8080:8080 ).
-				  <li>Helps to use something like etcd to track IP:PORT binding for your app when dealing with lots.
-				  </ul>
-
+				    <li>Use a language specific webserver library like `jetty` for java if possible.
+				    <li>Usually relying on an external webserver (ex. nginx for php) is a violation of 12factor.
+				    <li>Port Binding: <b>EXPOSE</b> in Dockerfile, or <b>$ docker run -p 8080:8080</b>.
+				    <li>any app can be used as a backing app for another app.
+				  <br><br>
+				  <p>
+ 					<aside class="notes">
+ 					* 12factor app is completely self contained and does not rely on an external webserver like apache.  However since our application is the container, its okay if you have to use a webserver inside the container.<br>
+ 					* Note also that the port-binding approach means that one app can become the backing service for another app, by providing the URL to the backing app as a resource handle in the config for the consuming app.
+ 					</aside>
 				</section>
 
 				<section>
 				  <h2>Fakter VIII. Concurrency</h2>
 				  <h4>Scale out via the process model</h4><br>
 				  <ul>
-				    <li>Scale up or down by creating or destroying docker containers.
+				    <li>assign each type of work to a process type ( container! )
 				    <li>Your application should not daemonize or write pid files.
 				    <ul>
 				      <li>if it does, you may be able to script around it.
 				      <li>Apps like nginx and apache can be run in foreground.
 				    </ul>
-				    <li>Utilize tools like upstart or supervisord to handle process management.
+				    <li>Utilize tools like runit or supervisord to handle process management.
+				    <li>Horizonal vs Vertical scaling.
   			  </ul>
+ 					<aside class="notes">
+ 					* Try to break up functionality of monolithic app into seperate containers/processes, each doing a specific task.<br>
+ 					* One container serves web requests, another processes images into thumbnails.<br>
+ 					* In the twelve-factor app, processes are <i>the</i> first class citizen.<br>
+ 					* Try to avoid daemonizing,  always want to run process in foreground.<br>
+ 					* VM/Phys can only grow so much, by having multiple containers we can now have multiple VMs.
+ 					</aside>
 				</section>
 
 				<section>
 				  <h2>Fakter IX. Disposability</h2>
 				  <h4>Maximize robustness with fast startup and graceful shutdown</h4><br>
 				  <ul>
-				    <li>Optimize to minimize startup ( Docker helps with this! )
+				    <li>Otimize to minimize startup ( Docker helps with this! )
 				    <li>Graceful shutdown ( Finish current reqs or give back to a queue )
 				    <li>Sudden Death ( minimal impact on crash.  Smart LB can help? )
   			  </ul>
+ 					<aside class="notes">
+ 					* All processes/containers should be disposable. stated or stopped at a moments notice<br>
+ 					* When a container gets SIGTERM, apps inside should gracefully shut down.<br>
+ 					* most web connections are brief, is it a big deal if you lose a few on Sudden death ?  Be OK with small amounts of broken connections.
+ 					</aside>
 				</section>
 
 				<section>
-				  <h2>Fakter X. Dev/prod parity</h2>
+				  <h2>X. Dev/prod parity</h2>
 				  <h4>Keep development, staging, and production as similar as possible</h4><br>
 				  <p>You've already done most of the work to achieve this:
 				  <ul>
-				    <li>Use Vagrant to deploy your app <i>and</i> backing services in dev environment using appropriate provisioners.
-				    <li>Docker helps reduce complexity and time to go from dev to prod.
+				    <li>Use Vagrant or Docker Compose to deploy your app <i>and</i> backing services in dev environment using appropriate provisioners.
+				    <li>Docker helps reduce time to go from dev to prod with portable/immutable artifacts.
 				    <li>by deploying all envs with same tooling, every dev rebuilt is a test of prod deploy tooling.
-				    <li>Actions to deploy to prod is very similar to deploy to dev.
+				    <li>Actions to deploy to prod should be very similar to deploy to dev.
   			  </ul>
+ 					<aside class="notes">
+ 					* If you've gotten this far, we've already accomplished just about everything required here.<br>
+ 					* it's mostly okay to use a mysql container in dev and RDS in prod.  mysql ~= mysql.<br>
+ 					* Docker-Compose is excellent for chaining together backing services, be wary of links.<br>
+ 					* Traditional CM is also perfect here.  For example using chef to build backing services and deploying container.
+ 					</aside>
 				</section>
 
 				<section>
-				  <h2>Fakter XI. Logs</h2>
+				  <h2>XI. Logs</h2>
 				  <h4>Treat logs as event streams</h4><br>
 				  <ul>
 				    <li>Never write to a log file always to stdout ( /dev/stdout /dev/stderr are your friends)
@@ -309,34 +439,52 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
 				    script around it (or use a remote file backing service) so that long running containers do not run out of disk space.
 				    <li>By writing to stdout, docker log subsystem sees the logs, and then tooling like ``logspout` can utilize to forward stream to central location.
   			  </ul>
+ 					<aside class="notes">
+ 					* super important! otherwise need log management in container.<br>
+ 					* if absolutely can't avoid writing logs, use a volume mount or a syslog in the container.<br>
+ 					* Set a self destruct timer.
+ 					</aside>
 				</section>
 
 				<section>
 				  <h2>XII. Admin processes</h2>
 				  <h4>Run admin/management tasks as one-off processes</h4><br>
+				  <p><b>Docker</b></p>
 				  <ul>
-				    <li>docker run -t -e TEXT=bacon myapp:1.3.2 rake db:migrate
+				    <li>docker run -t -e TEXT=bacon myapp:1.3.2 rake db:migrate or
 				    <li>docker exec -t vibrating_descartes rake db:migrate
 				  </ul>
+ 					<aside class="notes">
+ 						* never ssh to a running container to do one off tasks<br>
+ 						* best to create a new container to run the task and then die.<br>
+ 						* most PaaS have a way to do that.<br>
+ 						* can use docker exec to run it inside an existing container,  but try to avoid.
+
+ 					</aside>
 				</section>
 
 				<section>
-					<h2>Demo - 12 Fakter Wordpress</h2><br><br>
-					<p><a href="https://github.com/paulczar/12fakter-wordpress">https://github.com/paulczar/12fakter-wordpress</a></p>
+					<h2>Demo - Factorish</h2>
+					<p><a href="https://github.com/factorish/factorish">https://github.com/factorish/factorish</a></p>
+ 					<aside class="notes">
+ 					</aside>
 				</section>
 
    			<section>
 					<h2>Links</h2>
-  				<ul>
-						<li><a href="http://tech.paulcz.net/factorish">This Presentation</a></li>
-						<li><a href="https://github.com/paulczar/factorish">12 fakter dev sandbox</a></li>
-						<li><a href="https://github.com/paulczar/12fakter-wordpress">12 fakter wordpress</a></li>
+					<p><a href="http://tech.paulcz.net">http://tech.paulcz.net</a></p><br>
+					<ul>
+						<li><a href="http://tech.paulcz.net">Link 1</a></li>
 					</ul>
+ 					<aside class="notes">
+ 					</aside>
 				</section>
 
   			<section>
 					<h1>THE END</h1>
 					<h3>BY Paul Czarkowski  / @pczarkowski </h3>
+ 					<aside class="notes">
+ 					</aside>
 				</section>
 
 			</div>
