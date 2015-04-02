@@ -61,7 +61,17 @@
  					<aside class="notes">
  					* I am a sysadmin<br>
  					* get called rude names like cloud engineer or devop<br>
- 					* PCaaS
+ 					</aside>
+				</section>
+
+				<section>
+					<h2>Bluebox</h2>
+ 					<p><img src="images/private_cloud.png"><br>
+ 					<h2>Shameless Plug</h2>
+ 					<aside class="notes">
+ 					* I work at bluebox on the openstack team<br>
+ 					* we do PCaaS.  running PC is hard, we're here to do it for you.
+ 					* cloud / api driven infrastructure makes it easier to do dynamic apps / dockers
  					</aside>
 				</section>
 
@@ -156,8 +166,9 @@
 						<p><img src="images/spam_can_open.jpg"><br><small>http://tastyislandhawaii.com/2007/12/07/tulip-vs-treet-vs-spam-musubi-showdown/</small>
  					<p>The Container is your app
  					<aside class="notes">
- 					* however we can grind it up into a paste and put it in a container.
- 					* aside from the label, can't tell it apart from unicorn.
+ 					* however we can grind it up into a paste and put it in a container.<br>
+ 					* aside from the label, can't tell it apart from unicorn.<br>
+ 					* the container is our app ( or at least our built artifact / executable ).
  					</aside>
 				</section>
 
@@ -166,7 +177,7 @@
 						<p><img src="images/emoji_poop.png">
  					<aside class="notes">
  					* polishing a turd ... but a turd that makes you money!<br>
- 					* if you put it in a box, nobody knows theres a turd in there.
+ 					* there might be a poo in the box,  but from the outside it looks like unicorn!
  					</aside>
 				</section>
 
@@ -177,11 +188,11 @@
  						<li>You want to modernize your application.
  						<li>You probably can't <i>fix</i> the app.
  						<li>No time to rewrite the app.
- 						<li>
  					</ul>
  					<aside class="notes">
  					* have an app, it makes money, but its hard to run, hard to maintain.<br>
- 					* you like the idea of runtime configured immutable infrastructure.<br>
+ 					* you like the idea of runtime configured immutable application.<br>
+ 					* bimodal IT,  think towards future.<br>
  					* slow introduces your org to a new way of doing things.<br>
  					* CM + Docker is not big shift as all docker all time with dyn.<br>
  					* lets talk through the 12factors and talk about how to fake it.<br>
@@ -204,7 +215,8 @@
  					<aside class="notes">
  					* Factor 1 is all about having your code and everything required to run your code in source control.<br>
  					* scripts ( cookbooks etc ) to build, deploy, and run your code.  share versioning.<br>
- 					* vagrantfile to ensure everyone has exact same experience.
+ 					* vagrantfile to ensure everyone has exact same experience.<br>
+ 					* Factorish is designed to be copy/paste able into your code base with minimal change.
  					</aside>
 				</section>
 
@@ -213,15 +225,15 @@
 				  <h4>Explicitly declare and isolate dependencies</h4><br><br>
 				  <ul>
 				    <li>Declaration: Dockerfile
-				    <li>Isolation: `docker run`
+				    <li>Isolation: `docker build`
 				  </ul>
 				  <br><br>
  					<aside class="notes">
  					* Factor 2 tells us that all deps should be declared and isolated.<br>
  					* declares all dependencies, completely and exactly, not reliance on system packages<br>
- 					* dependency isolation tool during execution to ensure that no implicit dependencies 'leak in' <br>
- 					* Ruby, `gemfile` is declaration,  `bundle install` is isolation.
- 					* Docker, `Dockerfile` is declaration, `docker run` is isolation.
+ 					* dependency isolation - tool run during build to ensure that no implicit dependencies 'leak in' <br>
+ 					* Ruby, `gemfile` is declaration,  `bundle install` is isolation.<br>
+ 					* Docker, `Dockerfile` is declaration, `docker build` is isolation. - can rely on system packages.
  					</aside>
 				</section>
 
@@ -347,8 +359,8 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
 				  </ul>
  					<aside class="notes">
 * The build stage takes your code repo at a specific git release and converts it into an executable bundle known as a build.  It fetches and vendors dependencies and compiles binaries and assets.<br>
-* The release stage takes this build and combines it with the deploy’s current config. The resulting release contains both the build and the config and is ready for immediate execution in the execution environment.<br>
-* The run stage runs the app in the execution environment, by launching some set of the app’s processes against a selected release<br>
+* The release stage takes this build and combines it with the deploy’s current config. The resulting release contains both the build and the config and is ready for immediate execution. - versions, docker registry, rollback - free with paas<br>
+* The run stage runs the app in the execution environment by launching one or more processes against a selected release<br>
 * IMO its okay to combine Release/Run steps in a docker based environment. - but do lose some rollback capability.
  					</aside>
 				</section>
@@ -477,6 +489,9 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
 					<h2>Demo - Factorish</h2>
 					<p><a href="https://github.com/factorish/factorish">https://github.com/factorish/factorish</a></p>
  					<aside class="notes">
+ 					 * scoutapark, startup, dan is not dev, php = cheap labor for MVP<br>
+ 					 * walkthrough it, then walkthrough factorish.<br>
+ 					 * demo both<br>
  					</aside>
 				</section>
 
