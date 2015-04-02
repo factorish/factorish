@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>Factorish: The Twelve-Faktor App</title>
+		<title>Factorish: The Twelve-Fakter App</title>
 
 		<meta name="description" content="The Twelve-Fakter App">
 		<meta name="author" content="Paul Czarkowski">
@@ -46,7 +46,7 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-					<h2>Factorish: The Twelve-Faktor App</h2>
+					<h2>Factorish: The Twelve-Fakter App</h2>
 					<h3><a href="http://factorish.github.io/factorish">http://factorish.github.io/factorish</a></h3>
 					<p><img src="images/tofurkey.jpg"><br><small>http://www.tofurky.com/</small><br>
 					<p>
@@ -60,12 +60,13 @@
  					<p>Cloud Engineer @ Bluebox
  					<aside class="notes">
  					* I am a sysadmin<br>
- 					* get called rude names like cloud engineer or devop
+ 					* get called rude names like cloud engineer or devop<br>
+ 					* PCaaS
  					</aside>
 				</section>
 
 				<section>
-					<h2>Factorish: The Twelve-Faktor App</h2>
+					<h2>Factorish: The Twelve-Fakter App</h2>
 						<p><img src="images/donkey-carrot.png">
  					<aside class="notes">
  					* lot of noise in docker community about how to docker<br>
@@ -104,7 +105,7 @@
  					</aside>
 				</section>
 
-				<section>
+  			<section>
 					<h2>The Twelve-Factor App</h2>
 					<h3>Dockerized</h3>
 						<p><img src="images/unicorn_meat.jpg"><br><small>http://www.thinkgeek.com/product/e5a7/?srp=2</small>
@@ -119,6 +120,14 @@
  					<aside class="notes">
  					* meanwhile the rest of us have apps that look like this<br>
  					* not only is it decidely not a unicorn, but is weighed down by baggage
+ 					</aside>
+				</section>
+
+				<section>
+						<p><img height="200%" width="200%" src="images/willitdocker.gif">
+ 					<aside class="notes">
+ 					* so take your app and ask yourself ...  WILL IT DOCKER?<br>
+ 					* with Factorish the answer is *probably*
  					</aside>
 				</section>
 
@@ -162,8 +171,7 @@
 				</section>
 
 				<section>
-					<h2>The Twelve-Fakter App</h2>
-					<h3><a href="http://tech.paulcz.net/12Fakter">http://tech.paulcz.net/12Fakter</a></h3>
+					<h2>But Why ?</h2>
 					<br>
  					<ul>
  						<li>You want to modernize your application.
@@ -174,7 +182,9 @@
  					<aside class="notes">
  					* have an app, it makes money, but its hard to run, hard to maintain.<br>
  					* you like the idea of runtime configured immutable infrastructure.<br>
- 					* lets talk through the 12factors and talk about how to fake it.
+ 					* slow introduces your org to a new way of doing things.<br>
+ 					* CM + Docker is not big shift as all docker all time with dyn.<br>
+ 					* lets talk through the 12factors and talk about how to fake it.<br>
  					</aside>
 				</section>
 
@@ -336,8 +346,8 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
 				    <li class="fragment">Release/Run: `docker run -d -e TEXT=bacon myapp:v1.3.2`
 				  </ul>
  					<aside class="notes">
-* The build stage takes your code repo and converts it into an executable bundle known as a build.  Using a version of the code at a commit specified by the deployment process, the build stage fetches and vendors dependencies and compiles binaries and assets.<br>
-* The release stage takes the build produced by the build stage and combines it with the deploy’s current config. The resulting release contains both the build and the config and is ready for immediate execution in the execution environment.<br>
+* The build stage takes your code repo at a specific git release and converts it into an executable bundle known as a build.  It fetches and vendors dependencies and compiles binaries and assets.<br>
+* The release stage takes this build and combines it with the deploy’s current config. The resulting release contains both the build and the config and is ready for immediate execution in the execution environment.<br>
 * The run stage runs the app in the execution environment, by launching some set of the app’s processes against a selected release<br>
 * IMO its okay to combine Release/Run steps in a docker based environment. - but do lose some rollback capability.
  					</aside>
@@ -472,7 +482,12 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
 
    			<section>
 					<h2>Links</h2>
-					<p><a href="http://tech.paulcz.net">http://tech.paulcz.net</a></p><br>
+					<p><a href="factorish.github.io/factorish">This Presentation</a>
+					<p><a href="http://twitter.com/pczarkowski">@pczarkowski</a> follow me on twitter</p><br>
+					<p><a href="http://tech.paulcz.net/2015/01/factorish_and_the_12_fakter_app/">Blog post on factorish/12fakter</a>
+					<p><a href="http://tech.paulcz.net/2015/01/factorish_and_the_12_fakter_app/">This Presentation</a>
+					<p><a href="https://github.com/factorish/factorish">Factorish @ github</a>
+					<p><a href="https://github.com/factorish/factorish-elk">Factorish - ELK</a>
 					<ul>
 						<li><a href="http://tech.paulcz.net">Link 1</a></li>
 					</ul>
