@@ -21,9 +21,12 @@ You can build and run the `factorish/example` image to see the basic functionali
 
 ```
 $ docker build -t factorish/example example
-$ docker run -ti -e SERVICES_EXAMPLE_TEXT=father -p 8080:8080 factorish/example
+$ docker run -ti -p 8080:8080 factorish/example
 $ curl localhost:8080
 Luke, I am your father
+$ docker run -ti -e SERVICES_EXAMPLE_TEXT=mother -p 8080:8080 factorish/example
+$ curl localhost:8080
+Luke, I am your mother
 ```
 
 However launching a factorish development environment is as simple as running `vagrant up`.   The default cluster size is 3 VMs and as the first VM provisions it will start a private docker registry which it will use to host your images so that you only have to build or download them once.   It will then build your application as defined in the `factorish.rb` file and will launch it on each VM.
