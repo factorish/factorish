@@ -309,7 +309,7 @@ text: {{ getv "/services/example/text" }}
 				    <li>Fairly simple to manage for databases etc.
 				    <li>disk persistence is the hard one.
   			    <ul>
-				      <li>Docker: volume mounts*, data containers
+				      <li>Docker: volume mounts*, data containers, flocker
 				      <li>Remote Storage: netapp, nfs, fuse-s3fs
 				      <li>Clustered FS: drdb, gluster
 				      <li>Ghetto: rsync
@@ -319,7 +319,8 @@ text: {{ getv "/services/example/text" }}
  					* A backing service is any service the app consumes over the network as part of its normal operation<br>
  					* no distinction between local and third party services ... i.e. local mysql db = rds<br>
  					* ofc do have to manage that servce, but outside pervue of your app.<br>
- 					* change out backing services without code change ( change env variable! )
+ 					* change out backing services without code change ( change env variable! )<br>
+ 					* disk persistence is hard
  					</aside>
 				</section>
 
@@ -349,13 +350,13 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
 
 				<section>
 				  <h2>Fakter V. Build, release, run</h2>
-				  <h4>Strictly separate build and run stages</h4><br><br>
+				  <h4>Strictly separate build, release and run stages</h4><br><br>
 				  <ul>
 				    <li>Build: `docker build -t myapp:base .`
 				    <li>Release: `docker build -t myapp:v1.3.2 .`
 				    <li>Run: `docker run -d myapp:v1.3.2`
 				    <br><br>
-				    <li class="fragment">Release/Run: `docker run -d -e TEXT=bacon myapp:v1.3.2`
+				    <li class="fragment">Release/Run: `docker run -d -e TEXT=bacon myapp:base`
 				  </ul>
  					<aside class="notes">
 * The build stage takes your code repo at a specific git release and converts it into an executable bundle known as a build.  It fetches and vendors dependencies and compiles binaries and assets.<br>
@@ -485,6 +486,16 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
  					</aside>
 				</section>
 
+				<section data-background="images/scoutapark.jpg" data-background-size="1400px">
+					<h2>Demo - Scoutapark</h2>
+					<p><a href="http://scoutapark.com/">http://scoutapark.com</a></p>
+ 					<aside class="notes">
+ 					 * scoutapark, startup, dan is not dev, php = cheap labor for MVP<br>
+ 					 * walkthrough it, then walkthrough factorish.<br>
+ 					 * demo both<br>
+ 					</aside>
+				</section>
+
 				<section>
 					<h2>Demo - Factorish</h2>
 					<p><a href="https://github.com/factorish/factorish">https://github.com/factorish/factorish</a></p>
@@ -497,22 +508,20 @@ $ docker run -d -e DB_NAME=wordpress -e DB_USER=wordpress \
 
    			<section>
 					<h2>Links</h2>
-					<p><a href="factorish.github.io/factorish">This Presentation</a>
-					<p><a href="http://twitter.com/pczarkowski">@pczarkowski</a> follow me on twitter</p><br>
-					<p><a href="http://tech.paulcz.net/2015/01/factorish_and_the_12_fakter_app/">Blog post on factorish/12fakter</a>
-					<p><a href="http://tech.paulcz.net/2015/01/factorish_and_the_12_fakter_app/">This Presentation</a>
-					<p><a href="https://github.com/factorish/factorish">Factorish @ github</a>
-					<p><a href="https://github.com/factorish/factorish-elk">Factorish - ELK</a>
+					<br><br>
 					<ul>
-						<li><a href="http://tech.paulcz.net">Link 1</a></li>
-					</ul>
+					<li><a href="factorish.github.io/factorish">This Presentation</a>
+					<li><a href="http://tech.paulcz.net/2015/01/factorish_and_the_12_fakter_app/">Blog post on factorish/12fakter</a>
+					<li><a href="http://tech.paulcz.net/2015/01/factorish_and_the_12_fakter_app/">This Presentation</a>
+					<li><a href="https://github.com/factorish/factorish">Factorish @ github</a>
+					<li><a href="https://github.com/factorish/factorish-elk">Factorish - ELK</a>
  					<aside class="notes">
  					</aside>
 				</section>
 
   			<section>
-					<h1>THE END</h1>
-					<h3>BY Paul Czarkowski  / @pczarkowski </h3>
+					<h1>THE END</h1><br><br>
+					<h3>BY Paul Czarkowski  / <a href="http://twitter.com/pczarkowski">@pczarkowski</a> </h3>
  					<aside class="notes">
  					</aside>
 				</section>
