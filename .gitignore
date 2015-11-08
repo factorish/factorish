@@ -1,5 +1,4 @@
 .vagrant
 user-data
-registry/images
-registry/repositories
+registry/docker
 registry/*.tgz

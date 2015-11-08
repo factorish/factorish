@@ -12,16 +12,17 @@ factorish:
     channel: beta
     min_version: 554
     flannel:
-      enabled: True
+      enabled: False
       network: 10.1.0.0/16
   applications:
+  applications:
     registry:
-      repository: registry
+      repository: registry:2
       docker_options:
         - '-p 5000:5000'
         - '-e GUNICORN_OPTS=[--preload]'
         - '-e search_backend='
-        - '-v /home/core/share/registry:/tmp/registry'
+        - '-v /home/core/share/registry:/var/lib/registry'
       command:
     registrator:
       repository: progrium/registrator
